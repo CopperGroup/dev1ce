@@ -1,0 +1,854 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+@theme {
+  --color-blue-50: oklch(0.97 0.014 254.604);
+  --color-blue-100: oklch(0.932 0.032 255.585);
+  --color-blue-200: oklch(0.882 0.059 254.128);
+  --color-blue-300: oklch(0.809 0.105 251.813);
+  --color-blue-400: oklch(0.707 0.165 254.624);
+  --color-blue-500: oklch(0.623 0.214 259.815);
+  --color-blue-600: oklch(0.546 0.245 262.881);
+  --color-blue-700: oklch(0.488 0.243 264.376);
+  --color-blue-800: oklch(0.424 0.199 265.638);
+  --color-blue-900: oklch(0.379 0.146 265.522);
+  --color-blue-950: oklch(0.282 0.091 267.935);
+}
+
+@layer components {
+  /* main */
+  .main-container {
+    @apply flex min-h-screen flex-1 flex-col items-center bg-white  pb-10 pt-28 max-md:pb-32 overflow-x-hidden;
+  }
+
+  .adaptiveHeading {
+    @apply max-[520px]:text-[65px] max-[520px]:leading-[70px] max-[510px]:text-[63px] max-[510px]:leading-[68px] max-[500px]:text-[61px] max-[500px]:leading-[66px] max-[490px]:text-[60px] max-[490px]:leading-[65px] max-[480px]:text-[58px] max-[480px]:leading-[63px] max-[470px]:text-[56px] max-[470px]:leading-[61px] max-[460px]:text-[54px] max-[460px]:leading-[59px] max-[450px]:text-[52px] max-[450px]:leading-[57px] max-[440px]:text-[50px] max-[440px]:leading-[55px] max-[430px]:text-[48px] max-[430px]:leading-[53px] max-[420px]:text-[46px] max-[420px]:leading-[51px] max-[410px]:text-[44px] max-[410px]:leading-[49px] max-[400px]:text-[42px] max-[400px]:leading-[47px]
+  }
+  .admin-container {
+    @apply flex min-h-screen flex-1 flex-col items-center bg-white;
+  }
+
+  /* Head Text */
+  .head-text {
+    @apply text-heading2-bold text-light-1;
+  }
+
+  .Underline{
+    @apply after:content-[''] font-medium after:h-[2px] relative after:absolute after:w-0 after:hover:w-full after:transition-all  after:bg-black after:bottom-0 after:left-[50%] after:translate-x-[-50%];
+  }
+
+  /* Activity */
+  .activity-card {
+    @apply flex items-center gap-2 rounded-md bg-dark-2 px-7 py-4;
+  }
+
+  /* No Result */
+  .no-result {
+    @apply text-center !text-base-regular text-light-3;
+  }
+
+  /* Community Card */
+  .community-card {
+    @apply w-full rounded-lg bg-dark-3 px-4 py-5 sm:w-96;
+  }
+
+  .community-card_btn {
+    @apply rounded-lg bg-primary-500 px-5 py-1.5 text-small-regular !text-light-1 !important;
+  }
+
+  /* thread card  */
+  .thread-card_bar {
+    @apply relative mt-2 w-0.5 grow rounded-full bg-primary-experimental;
+  }
+
+  /* User card */
+  .user-card {
+    @apply flex flex-col justify-between gap-4 max-xs:rounded-xl max-xs:bg-dark-3 max-xs:p-4 xs:flex-row xs:items-center;
+  }
+
+  .user-card_avatar {
+    @apply flex flex-1 items-start justify-start gap-3 xs:items-center;
+  }
+
+  .user-card_btn {
+    @apply h-auto min-w-[74px] rounded-lg bg-primary-experimental text-[12px] text-light-1 hover:bg-transparent !important;
+  }
+
+  .searchbar {
+    @apply flex gap-1 rounded-lg bg-dark-3 px-4 py-2;
+  }
+
+  .searchbar_input {
+    @apply border-none bg-dark-3 text-base-regular text-light-4 outline-none !important;
+  }
+
+  .topbar {
+    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-dark-2 px-6 py-3;
+  }
+
+  .bottombar {
+    @apply fixed bottom-0 z-10 w-full rounded-t-3xl bg-glassmorphism p-4 backdrop-blur-lg xs:px-7 md:hidden;
+  }
+
+  .bottombar_container {
+    @apply flex items-center justify-between gap-3 xs:gap-5;
+  }
+
+  .bottombar_link {
+    @apply relative flex flex-col items-center gap-2 rounded-lg p-2 sm:flex-1 sm:px-2 sm:py-2.5;
+  }
+
+  .leftsidebar {
+    @apply sticky left-0 top-0 z-20 flex h-screen min-w-fit flex-col justify-between overflow-auto border-r text-black border-r-muted-normal pb-5 pt-5 max-lg:hidden;
+  }
+  
+  .leftsidebar_link {
+    @apply relative flex justify-start gap-4 rounded-l-lg py-2 pr-24 max-w-[250px] max-lg:pr-3 max-lg:rounded-lg;
+  }
+  
+  .active_svg {
+    @apply stroke-white;
+  }
+
+  .pagination {
+    @apply mt-10 flex w-full items-center justify-center gap-5;
+  }
+
+  .rightsidebar {
+    @apply sticky right-0 top-0 z-20 flex h-screen w-fit flex-col justify-between gap-12 overflow-auto border-l border-l-dark-4 bg-dark-2 px-10 pb-6 pt-28 max-xl:hidden;
+  }
+
+  /* вва */
+
+  .burger-button {
+    @apply  after:rotate-45 before:top-0 after:z-50 before:z-50 after:top-0 before:-rotate-45 bg-transparent  !important;
+  }
+
+  .burger-lines{
+    @apply transition-all after:duration-200 before:duration-200 lg:hidden h-[3px] w-8 bg-black relative after:content-[''] after:bg-black after:w-8 after:h-[3px] after:top-2 after:absolute flex before:content-[''] before:bg-black before:w-8 before:h-[3px] before:bottom-2  before:absolute;
+  }
+
+  .bg-burger{
+    @apply bg-white z-[999]   w-[100%] h-0 absolute left-0 top-28 text-center px-10 text-[20px] font-[550] overflow-x-hidden transition-all duration-700;
+  }
+
+  .bg-burger-active{
+    @apply h-full pt-16;
+  }
+
+  .gradient-1{
+    background: rgb(29,39,55);
+    background: -moz-linear-gradient(60deg, rgba(29,39,55,1) 0%, rgba(17,25,38,1) 100%);
+    background: -webkit-linear-gradient(60deg, rgba(29,39,55,1) 0%, rgba(17,25,38,1) 100%);
+    background: linear-gradient(60deg, rgba(29,39,55,1) 0%, rgba(17,25,38,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1d2737",endColorstr="#111926",GradientType=1);
+  }
+
+  .glassmorphism-1 {
+    background: rgba( 17, 16, 16, 0.7 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 4px );
+    -webkit-backdrop-filter: blur( 4px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+  }
+
+  .shadow-text {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@layer utilities {
+
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  .css-invert {
+    @apply invert-[50%] brightness-200;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #09090a;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #5c5c7b;
+    border-radius: 50px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #7878a3;
+  }
+
+  body {
+    transition-property: opacity, background, transform, filter;
+    transition-timing-function: ease-in-out;
+    transition-duration: 500ms; 
+    overflow-x:hidden;
+    overflow-y:hidden;
+    -webkit-appearance:none;
+  }
+  
+  .page-transition {
+    overflow: hidden;
+    opacity: 0;
+    background: #000000;
+    transform: translateY(40px);
+    filter: blur(12px);
+  }
+
+  .page-transition-right {
+    overflow: hidden;
+    opacity: 0;
+    background: #000000;
+    transform: translateX(-100px);
+    filter: blur(12px);
+  }
+
+  .page-transition-left {
+    overflow: hidden;
+    opacity: 0;
+    background: #000000;
+    transform: translateX(200px);
+    filter: blur(12px);
+  }
+
+  .shadow-extrasmall {
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0);
+  }
+
+  .edit-image:hover:nth-child(2) {
+    opacity: 1
+  }
+}
+
+
+body{
+  overflow: overlay;
+  scrollbar-gutter: stable both-edges; /* Стабільність скролу та видимі краї з обох сторін */
+  scroll-behavior: smooth; /* Плавна прокрутка */
+}
+
+.intro p{
+  font-size: 30px;
+  margin-bottom: 20px;
+  color:rgb(26, 25, 25);
+  font-weight: normal;
+}
+
+h1{
+  font-weight: 500;
+  font-size:80px;
+  line-height: 90px;
+  
+}
+
+.intro div{
+  position: absolute;
+  left: 100px;
+  top:300px
+}
+
+.menuShadow{
+  box-shadow: inset 0px 0px 4px 0px rgba(0,0,0,0.75);
+}
+
+
+
+
+
+.embla {
+  max-width: 36rem;
+  --slide-height: 573px;
+  --slide-spacing: 1rem;
+  --slide-size: 100%;
+}
+
+@media (max-width: 1440px) {
+  .embla {
+    --slide-height: 520px;
+  
+  }
+}
+
+@media (max-width: 1340px) {
+  .embla {
+    --slide-height: 473px;
+  
+  }
+}
+
+
+@media (max-width: 1240px) {
+  .embla {
+    --slide-height: 420px;
+  
+  }
+}
+
+@media (max-width: 1080px) {
+  .embla {
+    --slide-height: 373px;
+  
+  }
+}
+
+
+@media (min-width: 1024px) {
+  .embla {
+    margin: auto;
+    max-width: 40rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .embla {
+    --slide-height: 273px;
+  
+  }
+}
+
+@media (max-width: 380px) {
+  .embla {
+    --slide-height: 220px;
+  }
+}
+
+
+.embla__viewport {
+  overflow: hidden;
+}
+.embla__container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+.embla__slide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+}
+.embla__slide__number {
+  box-shadow: inset 0 0 0 0.2rem var(--detail-medium-contrast);
+  border-radius: 1.8rem;
+  font-size: 4rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--slide-height);
+  max-height: 573px;
+}
+.embla-thumbs {
+  --thumbs-slide-spacing: 0.8rem;
+  --thumbs-slide-height: 6rem;
+  margin-top: var(--thumbs-slide-spacing);
+}
+.embla-thumbs__viewport {
+  overflow: hidden;
+}
+.embla-thumbs__container {
+  display: flex;
+  flex-direction: row;
+  margin-left: calc(var(--thumbs-slide-spacing) * -1);
+}
+.embla-thumbs__slide {
+  flex: 0 0 22%;
+  min-width: 0;
+  padding-left: var(--thumbs-slide-spacing);
+}
+
+@media (min-width: 1024px) {
+  .embla__slide__number {
+    justify-items: start;
+    align-items: start;
+  }
+}
+
+@media (min-width: 576px) {
+  .embla-thumbs__slide {
+    flex: 0 0 15%;
+  }
+}
+
+@media (max-width: 396px) {
+  .embla-thumbs__slide {
+    flex: 0 0 35%;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 7px; /* Ширина скрола */
+  height: 7px; /* Висота скрола для горизонтального скролу */
+}
+
+::-webkit-scrollbar-track {
+  display: none;
+  background: #ffffff10; /* Колір треку (фону) */
+  border-radius: 6px;
+  margin: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: black; /* Колір повзунка */
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: black; /* Колір повзунка при наведенні */
+  
+}
+
+
+/* Стилізація для Firefox */
+
+/* * {
+  scrollbar-width: thin; Тонкий скрол
+  scrollbar-color: black #fff; Колір повзунка та треку відповідно  
+} */
+
+.admin-panel-scrollbar::-webkit-scrollbar {
+  width: 7px;
+
+}
+
+.admin-panel-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #000000;
+  border: 0px;
+  border-left: 3px solid #ffffff;
+  transition-duration: 1s;
+}
+
+.admin-panel-scrollbar::-webkit-scrollbar-track {
+  background: #ffffff50;
+}
+
+
+
+/* Додаткові стилі для країв та плавності прокрутки */
+
+@layer base {
+  :root {
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+[data-state="indeterminate"] {
+  position: relative;
+  background-color: #e5e7eb;
+  border-color: #6b7280;
+}
+
+[data-state="indeterminate"]::after {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 2px;
+  background-color: #4b5563;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Ensure tables don't overflow */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Make sure content sections take full width */
+section {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Fix for ProductsTable overflow */
+.products-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Ensure all admin components take full width */
+[class*="admin-component"] {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Editor specific styles */
+.transform-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.transform-container > div {
+  position: relative;
+  left: 0;
+  top: 0;
+}
+
+/* Editor workspace styles */
+.outline-mode * {
+  @apply outline-dashed outline-1 outline-gray-300;
+}
+
+.grid-mode {
+  background-size: 20px 20px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
+.bg-grid-pattern {
+  background-color: white;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Preview transitions */
+.jsx-preview {
+  transition: all 0.3s ease-in-out;
+}
+
+.jsx-preview-refreshing {
+  opacity: 0.5;
+}
+
+/* Element tree styles */
+.element-tree-node {
+  transition: background-color 0.2s ease;
+}
+
+.element-tree-node:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.element-tree-node.selected {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.element-tree-node .node-actions {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.element-tree-node:hover .node-actions {
+  opacity: 1;
+}
+
+/* Animation styles */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Device frame styles */
+.device-frame {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.device-frame-mobile {
+  border-radius: 16px;
+}
+
+.device-frame-tablet {
+  border-radius: 12px;
+}
+
+/* Add these styles to ensure proper scrolling in the preview area */
+.content-container {
+  transition: all 0.3s ease-in-out;
+  min-height: 100%;
+}
+
+/* Ensure the preview container can scroll when needed */
+.preview-container {
+  overflow: auto;
+  max-height: 100%;
+  width: 100%;
+}
+
+/* Improve scrollbars for the preview area */
+.preview-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.preview-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.preview-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.preview-container::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Ensure the workspace container can handle oversized content */
+.workspace-container {
+  overflow: auto;
+  position: relative;
+}
+
+/* Add styles for large screen simulation */
+.large-screen-container {
+  overflow-x: auto;
+  padding-bottom: 20px; /* Space for horizontal scrollbar */
+}
+
+/* Styles for scaled preview */
+.scale-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  overflow: visible;
+}
+
+.scaled-content-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  overflow: visible;
+}
+
+.scaled-container {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Improve the scale indicator */
+.scale-indicator {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Add a subtle grid background to make scaled content more visible */
+.scaled-content-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+  background-size: 20px 20px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Responsive preview container styles */
+.responsive-preview-container {
+  height: 100%;
+  overflow: auto;
+}
+
+/* Custom media query handling for preview mode */
+[data-preview-container] .sm\:hidden {
+  display: none;
+}
+
+[data-preview-container].preview-sm .sm\:hidden {
+  display: block;
+}
+
+[data-preview-container].preview-sm .sm\:block {
+  display: block;
+}
+
+[data-preview-container].preview-md .md\:hidden {
+  display: none;
+}
+
+[data-preview-container].preview-md .md\:block {
+  display: block;
+}
+
+[data-preview-container].preview-lg .lg\:hidden {
+  display: none;
+}
+
+[data-preview-container].preview-lg .lg\:block {
+  display: block;
+}
+
+[data-preview-container].preview-xl .xl\:hidden {
+  display: none;
+}
+
+[data-preview-container].preview-xl .xl\:block {
+  display: block;
+}
+
+/* Grid styles for different breakpoints */
+[data-preview-container].preview-md .md\:grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+[data-preview-container].preview-lg .lg\:grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Background colors for different breakpoints */
+[data-preview-container].preview-sm .sm\:bg-green-100 {
+  background-color: rgb(220, 252, 231);
+}
+
+[data-preview-container].preview-md .md\:bg-yellow-100 {
+  background-color: rgb(254, 249, 195);
+}
+
+[data-preview-container].preview-lg .lg\:bg-purple-100 {
+  background-color: rgb(243, 232, 255);
+}
+
+[data-preview-container].preview-xl .xl\:bg-pink-100 {
+  background-color: rgb(252, 231, 243);
+}
+
+/* Scale wrapper styles */
+.scale-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+}
+
+.scaled-content-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: visible;
+}
+
+.scaled-container {
+  transform-origin: top center;
+  position: relative;
+}
+
+.scale-indicator {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
