@@ -53,7 +53,7 @@ const MyOrders = async ({ params }: { params: { userId: string } }) => {
           </div>
           <h2 className="text-2xl font-medium text-gray-900 mb-3">Поки що замовлень немає</h2>
           <p className="text-base text-gray-500 max-w-md">
-            Ваші замовлення з'являться тут після оформлення покупки в нашому магазині
+            Ваші замовлення з&apos;являться тут після оформлення покупки в нашому магазині
           </p>
         </div>
       )}

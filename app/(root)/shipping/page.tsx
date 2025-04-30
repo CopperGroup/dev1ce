@@ -195,7 +195,7 @@ export default function ShippingPage() {
                     <h3 className="text-xl font-medium text-gray-900 mb-2">Гарантія якості</h3>
                     <p className="text-gray-500">
                       Якщо ви отримали товар з дефектом або він не відповідає опису, ми замінимо його або повернемо вам
-                      гроші. Будь ласка, зв'яжіться з нашою службою підтримки протягом 3 днів після отримання товару.
+                      гроші. Будь ласка, зв&apos;яжіться з нашою службою підтримки протягом 3 днів після отримання товару.
                     </p>
                   </div>
                 </div>
@@ -306,7 +306,7 @@ export default function ShippingPage() {
             <p className="text-gray-500 mb-6">Маєте інші запитання щодо доставки чи повернення?</p>
             <Link href="/contact">
               <Button className="bg-gray-900 hover:bg-black text-white rounded-full px-6 py-3 h-auto">
-                Зв'язатися з нами
+                Зв&apos;язатися з нами
               </Button>
             </Link>
           </div>

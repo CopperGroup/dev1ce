@@ -52,7 +52,7 @@ export default function ProductVariantSelector({ selectParams, productId }: Prod
         <div key={param} className="space-y-2 sm:space-y-3">
           <div className="flex items-center justify-between">
             <label className="text-xs sm:text-sm font-medium text-gray-900">{param}</label>
-            <span className="text-xs text-gray-500">Обов'язково</span>
+            <span className="text-xs text-gray-500">Обов&apos;язково</span>
           </div>
 
           {/* Option buttons for visual options like colors, sizes, etc. */}

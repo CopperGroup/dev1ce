@@ -26,7 +26,7 @@ export async function generatePromoCode({
 
 
 
-export async function usePromoCode({
+export async function validatePromoCode({
   promoCode,
   email,
 }: {

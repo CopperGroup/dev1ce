@@ -66,7 +66,7 @@ export default function ContactPage() {
       <section className="w-full py-20 bg-[#f5f5f7]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="max-w-3xl">
-            <h1 className="text-5xl font-semibold text-gray-900 mb-6 tracking-tight">Зв'язатися з нами</h1>
+            <h1 className="text-5xl font-semibold text-gray-900 mb-6 tracking-tight">Зв&apos;язатися з нами</h1>
             <p className="text-xl text-gray-500 leading-relaxed">
               Маєте запитання чи потребуєте допомоги? Наша команда підтримки завжди готова допомогти вам.
             </p>
@@ -129,7 +129,7 @@ export default function ContactPage() {
             <div>
               <h2 className="text-3xl font-semibold text-gray-900 mb-6 tracking-tight">Напишіть нам</h2>
               <p className="text-gray-500 mb-8">
-                Заповніть форму нижче, і наша команда зв'яжеться з вами якомога швидше.
+                Заповніть форму нижче, і наша команда зв&apos;яжеться з вами якомога швидше.
               </p>
 
               <form className="space-y-6" onSubmit={handleSubmit}>
@@ -196,7 +196,7 @@ export default function ContactPage() {
                 {status === "success" && (
                   <div className="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50">
                     <CheckCircle className="flex-shrink-0 inline w-5 h-5 mr-3" />
-                    <span>Повідомлення успішно надіслано! Ми зв'яжемося з вами найближчим часом.</span>
+                    <span>Повідомлення успішно надіслано! Ми зв&apos;яжемося з вами найближчим часом.</span>
                   </div>
                 )}
 
@@ -236,7 +236,7 @@ export default function ContactPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-semibold text-gray-900 mb-4 tracking-tight">Часті запитання</h2>
             <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-              Знайдіть відповіді на найпоширеніші запитання або зв'яжіться з нами для отримання додаткової інформації.
+              Знайдіть відповіді на найпоширеніші запитання або зв&apos;яжіться з нами для отримання додаткової інформації.
             </p>
           </div>
 

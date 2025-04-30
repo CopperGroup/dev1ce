@@ -330,14 +330,14 @@ export default function FAQPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-semibold text-gray-900 mb-4 tracking-tight">Не знайшли відповідь?</h2>
             <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-              Зв'яжіться з нашою службою підтримки, і ми з радістю допоможемо вам.
+              Зв&apos;яжіться з нашою службою підтримки, і ми з радістю допоможемо вам.
             </p>
           </div>
 
           <div className="flex flex-col md:flex-row justify-center gap-6">
             <Link href="/contact">
               <Button className="bg-gray-900 hover:bg-black text-white rounded-full px-6 py-3 h-auto">
-                Зв'язатися з нами
+                Зв&apos;язатися з нами
               </Button>
             </Link>
             <Link href="/warranty">

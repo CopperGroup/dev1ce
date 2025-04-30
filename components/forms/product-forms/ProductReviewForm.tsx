@@ -217,7 +217,7 @@ export default function ProductReviewForm({
 
         {/* Photo Attachments */}
         <div className="space-y-2">
-          <Label className="text-base font-medium">Фото (необов'язково)</Label>
+          <Label className="text-base font-medium">Фото (необов&apos;язково)</Label>
           <div className="flex flex-wrap gap-4 mt-2">
             {attachmentPreviews.map((preview, index) => (
               <div key={index} className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200">
@@ -264,7 +264,7 @@ export default function ProductReviewForm({
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="name" className="text-base font-medium">
-              Ваше ім'я <span className="text-red-500">*</span>
+              Ваше ім&apos;я <span className="text-red-500">*</span>
             </Label>
             <Input
               id="name"

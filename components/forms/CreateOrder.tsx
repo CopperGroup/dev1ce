@@ -47,7 +47,7 @@ import { signIn } from "next-auth/react"
 import { fetchUserByEmail } from "@/lib/actions/user.actions"
 import axios from "axios"
 import { Mail, Lock, UserIcon, ArrowLeft, RefreshCw } from "lucide-react"
-import { usePromoCode } from "@/lib/actions/promocode.actions"
+import { validatePromoCode } from "@/lib/actions/promocode.actions"
 import { sendOrderEmail } from "@/lib/email/order"
 
 type CartProduct = {
@@ -155,7 +155,7 @@ const CreateOrder = ({ userId, email }: { userId: string; email: string }) => {
 
     try {
       // For custom promo codes, use the provided function
-      const result = await usePromoCode({
+      const result = await validatePromoCode({
         promoCode: promocode,
         email: email,
       })
