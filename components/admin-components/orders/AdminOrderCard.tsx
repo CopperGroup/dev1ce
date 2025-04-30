@@ -1,12 +1,24 @@
-"use server";
+"use server"
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Package, Truck, CreditCard, MapPin, Phone, Mail, User, Calendar, ChevronRight } from "lucide-react"
-import { ProductType } from "@/lib/types/types";
+import {
+  Package,
+  Truck,
+  CreditCard,
+  MapPin,
+  Phone,
+  Mail,
+  User,
+  Calendar,
+  ChevronRight,
+  Tag,
+  Percent,
+} from "lucide-react"
+import type { ProductType } from "@/lib/types/types"
 
 interface Product {
   product: ProductType
@@ -31,12 +43,13 @@ interface OrderCardProps {
   paymentStatus: string
   deliveryStatus: string
   url: string
+  promocode?: string
+  discount?: number
 }
 
 const AdminOrderCard = ({
   id,
   products,
-
   value,
   name,
   surname,
@@ -51,8 +64,9 @@ const AdminOrderCard = ({
   paymentStatus,
   deliveryStatus,
   url,
+  promocode,
+  discount,
 }: OrderCardProps) => {
-
   const formatter = new Intl.NumberFormat("uk-UA", {
     style: "currency",
     currency: "UAH",
@@ -156,6 +170,26 @@ const AdminOrderCard = ({
                 <p className="text-small-semibold text-slate-700">{deliveryMethod}</p>
               </div>
             </div>
+
+            {promocode && (
+              <div className="flex items-start">
+                <Tag className="h-4 w-4 mr-2 text-slate-500 mt-0.5" />
+                <div>
+                  <p className="text-small-regular text-slate-500">Промокод</p>
+                  <p className="text-small-semibold text-slate-700">{promocode}</p>
+                </div>
+              </div>
+            )}
+
+            {discount && discount > 0 && (
+              <div className="flex items-start">
+                <Percent className="h-4 w-4 mr-2 text-slate-500 mt-0.5" />
+                <div>
+                  <p className="text-small-regular text-slate-500">Знижка</p>
+                  <p className="text-small-semibold text-slate-700">{discount}%</p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex items-start">
@@ -192,8 +226,22 @@ const AdminOrderCard = ({
             </AccordionItem>
           </Accordion>
 
-          <div className="grid grid-cols-2 gap-3 pt-2">
-          </div>
+          {promocode && discount && discount > 0 && (
+            <div className="pt-2 border-t border-slate-100">
+              <div className="flex justify-between items-center text-small-medium">
+                <span className="text-slate-600">Сума без знижки:</span>
+                <span className="text-slate-700">{formatter.format(value / (1 - discount / 100))}</span>
+              </div>
+              <div className="flex justify-between items-center text-small-medium mt-1">
+                <span className="text-slate-600">Знижка ({discount}%):</span>
+                <span className="text-green-600">-{formatter.format(value / (1 - discount / 100) - value)}</span>
+              </div>
+              <div className="flex justify-between items-center text-base-semibold mt-1">
+                <span className="text-slate-700">Фінальна сума:</span>
+                <span className="text-slate-900">{formatter.format(value)}</span>
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
 
@@ -210,4 +258,3 @@ const AdminOrderCard = ({
 }
 
 export default AdminOrderCard
-

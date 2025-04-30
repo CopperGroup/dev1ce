@@ -32,14 +32,14 @@ export default function Brand() {
   return (
     <motion.section
       ref={sectionRef}
-      className="w-full py-24 bg-zinc-50"
+      className="w-full py-24 bg-white"
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.8 }}
     >
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="max-w-[1200px] mx-auto px-6">
         <motion.h2
-          className="text-heading1-bold mb-12 text-center text-zinc-900"
+          className="text-4xl font-semibold text-gray-900 mb-6 text-center tracking-tight"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -47,14 +47,15 @@ export default function Brand() {
           Наші Основні Цінності
         </motion.h2>
         <motion.p
-          className="text-body-medium text-zinc-600 text-center max-w-2xl mx-auto mb-16"
+          className="text-lg text-gray-500 text-center max-w-2xl mx-auto mb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          Ми пропонуємо більше, ніж просто пристрої — ми створюємо повну екосистему технологій, яка поєднує інновації, підтримку та надійність.
+          Ми пропонуємо більше, ніж просто пристрої — ми створюємо повну екосистему технологій, яка поєднує інновації,
+          підтримку та надійність.
         </motion.p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           {brandValues.map((value, index) => (
             <motion.div
               key={index}
@@ -63,11 +64,11 @@ export default function Brand() {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.6, delay: 0.4 + index * 0.1 }}
             >
-              <div className="mb-6 p-4 rounded-lg bg-gradient-to-br from-sky-500 to-sky-600 shadow-lg">
-                <value.icon className="w-8 h-8 text-white" />
+              <div className="mb-8 p-6 rounded-full bg-[#f5f5f7]">
+                <value.icon className="w-8 h-8 text-gray-900" />
               </div>
-              <h3 className="text-heading3-bold mb-4 text-zinc-900">{value.title}</h3>
-              <p className="text-base-regular text-zinc-600 max-w-sm">{value.description}</p>
+              <h3 className="text-xl font-medium text-gray-900 mb-4">{value.title}</h3>
+              <p className="text-base text-gray-500">{value.description}</p>
             </motion.div>
           ))}
         </div>

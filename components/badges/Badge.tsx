@@ -1,20 +1,21 @@
-const Badge = (priceToShow:any) => {
+const Badge = (priceToShow: any) => {
+  let discount = 0
 
-
- 
-
-  let discount = 0;
-
-  if(priceToShow.price!=priceToShow.priceToShow){
-    discount = 100 - (priceToShow.priceToShow/(priceToShow.price/100));
+  if (priceToShow.price != priceToShow.priceToShow) {
+    discount = 100 - priceToShow.priceToShow / (priceToShow.price / 100)
   }
-
 
   return (
     <>
-      {discount!=0?<p className="text-white text-center text-[10.5px] font-semibold border border-sky-400 bg-sky-500/90 mt-1 py-1 px-2 rounded-3xl z-10 relative">-{Math.round(discount)+'%'}</p>:<div></div>}
+      {discount != 0 ? (
+        <div className="relative bg-gray-900 text-white text-xs font-medium px-2.5 py-1 rounded-full z-20">
+          -{Math.round(discount)}%
+        </div>
+      ) : (
+        <div></div>
+      )}
     </>
   )
 }
 
-export default Badge 
+export default Badge

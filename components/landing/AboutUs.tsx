@@ -19,49 +19,50 @@ export default function AboutUs() {
   return (
     <motion.section
       ref={sectionRef}
-      className="w-full py-24 bg-zinc-50"
+      className="w-full py-24 bg-white"
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.8 }}
     >
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="max-w-[1200px] mx-auto px-6">
         <div className="relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <motion.div
               className="space-y-8"
-              initial={{ opacity: 0, x: -50 }}
-              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              initial={{ opacity: 0, x: -30 }}
+              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <h2 className="text-heading1-bold text-zinc-900">Про {Store.name}</h2>
-              <p className="text-body-medium text-zinc-600">
-                Ми створюємо колекції, що поєднують інновації, продуктивність та надійність. Наші пристрої та аксесуари розроблені для тих, хто цінує якість та сучасні технології у кожній деталі.
+              <h2 className="text-4xl font-semibold text-gray-900 tracking-tight">Про {Store.name}</h2>
+              <p className="text-lg text-gray-500 leading-relaxed">
+                Ми створюємо колекції, що поєднують інновації, продуктивність та надійність. Наші пристрої та аксесуари
+                розроблені для тих, хто цінує якість та сучасні технології у кожній деталі.
               </p>
-              <div className="space-y-6">
+              <div className="space-y-8 pt-4">
                 {features.map((feature, index) => (
                   <motion.div
                     key={index}
-                    className="flex items-start space-x-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                    className="flex items-start"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
                     transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
                   >
-                    <div className="flex-shrink-0 w-px h-6 bg-sky-300 mt-2" />
                     <div>
-                      <h3 className="text-base-semibold text-zinc-900">{feature.title}</h3>
-                      <p className="text-base-regular text-zinc-600">{feature.description}</p>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">{feature.title}</h3>
+                      <p className="text-base text-gray-500">{feature.description}</p>
                     </div>
                   </motion.div>
                 ))}
               </div>
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
                 transition={{ duration: 0.4, delay: 0.7 }}
+                className="pt-4"
               >
                 <LinkButton
                   href="/products"
-                  className="text-small-semibold transition-colors px-6 py-3 bg-sky-500 hover:bg-sky-600 rounded-md"
+                  className="text-base font-medium transition-colors px-8 py-4 bg-gray-900 hover:bg-black text-white rounded-full"
                 >
                   Дослідити Наші Продукти
                 </LinkButton>
@@ -70,11 +71,11 @@ export default function AboutUs() {
 
             <motion.div
               className="relative"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <div className="aspect-[3/4] overflow-hidden rounded-lg">
+              <div className="aspect-[4/5] overflow-hidden rounded-2xl">
                 <Image
                   src="/assets/about-us.jpg"
                   alt="Сучасний технологічний робочий простір"
@@ -82,8 +83,8 @@ export default function AboutUs() {
                   className="object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -left-6 w-48 h-48 border border-zinc-200 rounded-lg flex items-center justify-center p-4 bg-white/80 backdrop-blur-sm">
-                <p className="text-center text-base-semibold text-zinc-900">Інновації в технологіях з досконалістю</p>
+              <div className="absolute -bottom-8 -left-8 max-w-[260px] p-6 bg-white shadow-lg rounded-2xl">
+                <p className="text-base font-medium text-gray-900">Інновації в технологіях з досконалістю</p>
               </div>
             </motion.div>
           </div>

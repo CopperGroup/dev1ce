@@ -23,6 +23,15 @@ export type ProductType = {
         name: string,
         value: string
     }[],
+    reviews: [
+        {
+            user: string,
+            rating: number,
+            text: string,
+            attachmentsUrls: string[],
+            time: string
+        }
+    ]
     isFetched: boolean,
     likedBy: string[],
     addedToCart: Date[],

@@ -7,19 +7,24 @@ import { UserType } from "../types/types";
 import { generateLongPassword } from "../utils";
 import { redirect } from "next/navigation";
 import { hasPermission } from "../roles";
+import bcrypt from "bcryptjs";
 
 type CreateUserParams = {
     username: string, 
     email: string,
-    password: string
+    password: string,
+    phoneNumber: string,
+    promoCode: string
 }
 
-export async function createUser({ username, email, password }: CreateUserParams) {
+export async function createUser({ username, email, password, phoneNumber, promoCode }: CreateUserParams) {
     try {
         const newUser = await User.create({
             username,
             email,
             password,
+            phoneNumber,
+            discounts: [promoCode],
             selfCreated: false
         })
 
@@ -123,7 +128,7 @@ export async function populateSelfCreatedUser(params: CreateUserParams, type?: '
 
     const existingUser = await User.findOneAndUpdate(
         { email: params.email },
-        { $set: { username: params.username, password: params.password, selfCreated: false } },
+        { $set: { username: params.username, password: params.password, phoneNumber: params.phoneNumber, discounts: [params.promoCode], selfCreated: false } },
         { new: true, runValidators: true }
     ).select("-password");
 
@@ -219,4 +224,34 @@ export async function fetchUserRole({ email }: { email: string }) {
   } catch (error: any) {
     throw new Error(`${error.message}`)
   }
+}
+
+export async function resetPassword({
+    token,
+    newPassword,
+  }: {
+    token: string;
+    newPassword: string;
+  }) {
+    try {
+      await connectToDB();
+      
+      const user = await User.findOne({
+        forgotPasswordToken: token,
+        forgotPasswordTokenExpiry: { $gt: new Date() },
+      });
+  
+      if (!user) {
+        throw new Error("Invalid or expired token.");
+      }
+  
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+  
+      user.password = hashedPassword;
+      user.forgotPasswordToken = undefined;
+      user.forgotPasswordTokenExpiry = undefined;
+      await user.save();
+    } catch (error: any) {
+        throw new Error(`Error reseting password: ${error.message}`)
+    }
 }

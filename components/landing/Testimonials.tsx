@@ -3,50 +3,90 @@
 import { useRef, useState } from "react"
 import { motion, useInView } from "framer-motion"
 import Image from "next/image"
-import { Star, ChevronLeft, ChevronRight } from "lucide-react"
+import { Star, ChevronLeft, ChevronRight, User2Icon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Store } from "@/constants/store"
 
 const testimonials = [
   {
     id: 1,
-    name: "Олександр Петренко",
-    role: "Розробник програмного забезпечення",
+    name: "Валентин Вольський",
+    role: "Геймер",
     avatar: "/assets/t1.jpg",
     rating: 5,
-    text: `Гаджети від ${Store.name} значно підвищили мою продуктивність. Якість збірки та продуктивність просто вражають. Технічна підтримка завжди готова допомогти з будь-якими питаннями.`,
+    text: `Задоволений як мала дитина. Клавіатура просто шикарна. Все працює добре, підсвітка, і екранчик, налаштування. Звук клацання дуже приємний, налаштування на клавіатури легкі та прості.`,
   },
   {
     id: 2,
-    name: "Марія Коваленко",
-    role: "Дизайнер інтерфейсів",
+    name: "Денис Литвин",
+    role: "Постійний покупець",
     avatar: "/assets/t2.jpg",
     rating: 5,
-    text: `Я використовую ноутбук від ${Store.name} для своєї роботи вже понад рік. Батарея тримає довше, ніж у конкурентів, а продуктивність на висоті. Рекомендую всім, хто серйозно ставиться до своєї роботи.`,
+    text: `Замовив клавіатуру у вихідний, і на наступний день вже привезли, до товару питань немає, все супер. Менеджер також відповідав на питання та допоміг з налаштуванням клавіатури`,
   },
   {
     id: 3,
-    name: "Іван Мельник",
-    role: "Геймер",
+    name: "Олеся Боровик",
+    role: "Мама",
     avatar: "/assets/t3.jpg",
     rating: 4,
-    text: `Придбав ігровий ПК і був приємно вражений його швидкістю та продуктивністю. Єдине, що можна покращити - це шумоізоляцію, але в цілому дуже задоволений покупкою.`,
+    text: `Заказали наушники ребенку, все очень быстро, качественно, ребенок доволен! Дякуємо вам!`,
   },
   {
     id: 4,
-    name: "Наталія Шевченко",
-    role: "Відеомонтажер",
+    name: "Никита Мелашенко",
+    role: "Геймер",
     avatar: "/assets/t4.jpg",
     rating: 5,
-    text: `Використовую монітори ${Store.name} для монтажу відео. Точність кольорів та роздільна здатність - це саме те, що потрібно для професійної роботи з відео.`,
+    text: `Дуже легка і зручна мишка, швидка відповідь від операторів магазину на мої питання.`,
   },
   {
     id: 5,
-    name: "Сергій Бондаренко",
-    role: "Технічний ентузіаст",
-    avatar: "/assets/t5.jpg",
+    name: "Євген Черняк",
+    role: "Постійний покупець",
+    avatar: "",
     rating: 5,
-    text: `Почав з базової моделі смартфона, а тепер маю вже кілька різних пристроїв від ${Store.name}. Якість збірки, надійність та постійні оновлення програмного забезпечення роблять ці гаджети найкращими на ринку.`,
+    text: `Швидко виходять на звʼязок, швидко відправляють замовлення. Товар відповідає опису. Раджу магазин DEV1CE!`,
+  },
+  {
+    id: 6,
+    name: "Максим Гофман",
+    role: "Геймер",
+    avatar: "",
+    rating: 5,
+    text: `Всё санчизес`,
+  },
+  {
+    id: 7,
+    name: "Наталья Линник",
+    role: "Мама",
+    avatar: "",
+    rating: 5,
+    text: `Покупкою задоволені, продавець, доставка, упаковка - швидке та зручне. Мишка якісна, швидкодіюча, якісно працює як через шнур так і без, легка, компактна. Для геймерів підходить.`,
+  },
+  {
+    id: 8,
+    name: "Андрій Бойко",
+    role: "Постійний покупець",
+    avatar: "",
+    rating: 5,
+    text: `Клавіатура чудова, доставили на день раніше, усе, що мало бути у комплекті було на місці!`,
+  },
+  {
+    id: 8,
+    name: "Тимофій Якобчук",
+    role: "Постійний покупець",
+    avatar: "",
+    rating: 5,
+    text: `Щиро дякую магазину. Дуже задоволені!`,
+  },
+  {
+    id: 8,
+    name: "Оксана Чигрин",
+    role: "Мама",
+    avatar: "",
+    rating: 5,
+    text: `Все супер. Товар прийшов швидко та без дефектів. Задоволений`,
   },
 ]
 
@@ -93,21 +133,20 @@ export default function Testimonials() {
   return (
     <motion.section
       ref={sectionRef}
-      className="w-full py-24 bg-gray-50"
+      className="w-full py-24 bg-white"
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.8 }}
     >
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="max-w-[1200px] mx-auto px-6">
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <h2 className="text-heading1-bold text-zinc-900 mb-4">Відгуки наших клієнтів</h2>
-          <div className="w-24 h-1 bg-sky-500 mx-auto mb-6" />
-          <p className="text-body-medium text-zinc-600 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-semibold text-gray-900 mb-4 tracking-tight">Відгуки наших клієнтів</h2>
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             Дізнайтеся, що говорять наші клієнти про досвід використання техніки {Store.name} та нашу підтримку
           </p>
         </motion.div>
@@ -118,23 +157,23 @@ export default function Testimonials() {
               onClick={handlePrev}
               disabled={activeIndex === 0}
               className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-md transition-all",
-                activeIndex === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-sky-50",
+                "w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-md transition-all",
+                activeIndex === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50",
               )}
               aria-label="Попередній відгук"
             >
-              <ChevronLeft className="w-5 h-5 text-sky-500" />
+              <ChevronLeft className="w-5 h-5 text-gray-900" />
             </button>
             <button
               onClick={handleNext}
               disabled={activeIndex === maxIndex}
               className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-md transition-all",
-                activeIndex === maxIndex ? "opacity-50 cursor-not-allowed" : "hover:bg-sky-50",
+                "w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-md transition-all",
+                activeIndex === maxIndex ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50",
               )}
               aria-label="Наступний відгук"
             >
-              <ChevronRight className="w-5 h-5 text-sky-500" />
+              <ChevronRight className="w-5 h-5 text-gray-900" />
             </button>
           </div>
 
@@ -147,23 +186,18 @@ export default function Testimonials() {
                 <motion.div
                   key={testimonial.id}
                   className="w-full md:w-1/3 flex-shrink-0 px-4"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
                 >
-                  <div className="bg-white p-6 rounded-lg shadow-md h-full flex flex-col border border-gray-100">
-                    <div className="flex items-center mb-4">
+                  <div className="bg-[#f5f5f7] p-8 rounded-2xl h-full flex flex-col">
+                    <div className="flex items-center mb-6">
                       <div className="relative w-12 h-12 rounded-full overflow-hidden mr-4">
-                        <Image
-                          src={testimonial.avatar || "/placeholder.svg?height=48&width=48"}
-                          alt={testimonial.name}
-                          fill
-                          className="object-cover"
-                        />
+                        <User2Icon className="w-full h-full p-2 text-gray-500"/>
                       </div>
                       <div>
-                        <h3 className="text-base-semibold text-zinc-900">{testimonial.name}</h3>
-                        <p className="text-small-medium text-zinc-500">{testimonial.role}</p>
+                        <h3 className="text-base font-medium text-gray-900">{testimonial.name}</h3>
+                        <p className="text-sm text-gray-500">{testimonial.role}</p>
                       </div>
                     </div>
                     <div className="flex mb-4">
@@ -172,14 +206,14 @@ export default function Testimonials() {
                           key={i}
                           className={cn(
                             "w-4 h-4",
-                            i < testimonial.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300",
+                            i < testimonial.rating ? "text-gray-900 fill-gray-900" : "text-gray-300",
                           )}
                         />
                       ))}
                     </div>
-                    <p className="text-base-regular text-zinc-700 flex-grow">{testimonial.text}</p>
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <p className="text-small-medium text-sky-500">Підтверджений покупець</p>
+                    <p className="text-base text-gray-700 flex-grow">{testimonial.text}</p>
+                    <div className="mt-6 pt-4 border-t border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">Підтверджений покупець</p>
                     </div>
                   </div>
                 </motion.div>
@@ -193,18 +227,18 @@ export default function Testimonials() {
               disabled={activeIndex === 0}
               className={cn(
                 "w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-md mx-2",
-                activeIndex === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-sky-50",
+                activeIndex === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50",
               )}
               aria-label="Попередній відгук"
             >
-              <ChevronLeft className="w-5 h-5 text-sky-500" />
+              <ChevronLeft className="w-5 h-5 text-gray-900" />
             </button>
             {/* Pagination indicators */}
             <div className="flex items-center mx-2">
               {Array.from({ length: testimonials.length - (visibleTestimonials - 1) }).map((_, index) => (
                 <div
                   key={index}
-                  className={cn("w-2 h-2 mx-1 rounded-full", activeIndex === index ? "bg-sky-500" : "bg-gray-300")}
+                  className={cn("w-2 h-2 mx-1 rounded-full", activeIndex === index ? "bg-gray-900" : "bg-gray-300")}
                 />
               ))}
             </div>
@@ -213,11 +247,11 @@ export default function Testimonials() {
               disabled={activeIndex === maxIndex}
               className={cn(
                 "w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-md mx-2",
-                activeIndex === maxIndex ? "opacity-50 cursor-not-allowed" : "hover:bg-sky-50",
+                activeIndex === maxIndex ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50",
               )}
               aria-label="Наступний відгук"
             >
-              <ChevronRight className="w-5 h-5 text-sky-500" />
+              <ChevronRight className="w-5 h-5 text-gray-900" />
             </button>
           </div>
         </div>
@@ -225,4 +259,3 @@ export default function Testimonials() {
     </motion.section>
   )
 }
-

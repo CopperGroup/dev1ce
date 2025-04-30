@@ -17,7 +17,6 @@ const Links = [
   { label: "Каталог", href: "/catalog?page=1&sort=default" },
   { label: "Обране", href: "/liked" },
   { label: "Мої замовлення", href: "/myOrders" },
-  { label: "Інформація", href: "/info" },
 ]
 
 const infoNames = ["Контакти", "Доставка та оплата", "Гарантія та сервіс"]
@@ -46,19 +45,16 @@ export default function Header({ email, user }: { email: string; user: string })
   }
 
   return (
-    <header
-      ref={headerRef}
-      className="w-full min-w-[320px] h-20 flex justify-center items-center"
-    >
-      <div className="w-full max-w-[1680px] h-full flex justify-between items-center bg-black px-5 max-[600px]:px-9 max-[500px]:px-7">
-        <div className="size-5 hidden max-lg:flex"></div>
+    <header ref={headerRef} className="w-full min-w-[320px] sticky top-0 z-[7000] bg-white border-b border-gray-200">
+      <div className="w-full max-w-[1200px] h-16 mx-auto flex justify-between items-center px-6">
+        <div className="w-5 hidden max-lg:flex"></div>
         <div>
           <Link href="/" className="w-fit flex gap-2 justify-center items-center">
             {/* <Logo /> */}
-            <p className="text-base-semibold text-white">{Store.name}</p>
+            <p className="text-lg font-medium text-gray-900">{Store.name}</p>
           </Link>
         </div>
-        <nav className="w-fit h-11 flex gap-1 justify-center items-center rounded-xl bg-zinc-800/50 px-2 max-lg:hidden">
+        <nav className="flex items-center space-x-8 max-lg:hidden">
           <AdminLink />
           {Links.map(({ label, href }, index) => {
             const isActive = (href.includes(pathname) && pathname.length > 1) || pathname === href
@@ -68,44 +64,41 @@ export default function Header({ email, user }: { email: string; user: string })
 
               return (
                 <div key={label}>
-                  <div
-                    className={`w-fit h-8 text-zinc-400 flex justify-center items-center border-zinc-700 rounded-lg px-[0.885rem] ${isActive && "bg-sky-500/10 text-sky-400 border"}`}
+                  <TransitionLink
+                    href={`${href}${label === "Обране" ? "/" + userInfo?._id : "/user/" + userInfo?._id}`}
+                    className={`text-sm font-medium transition-colors ${
+                      isActive ? "text-gray-900" : "text-gray-500 hover:text-gray-900"
+                    }`}
+                    onClick={() => handleLead(label)}
                   >
-                    <TransitionLink
-                      href={`${href}${label === "Обране" ? "/" + userInfo?._id : ""}`}
-                      className={`text-small-medium font-normal hover:text-sky-400 transition-all ${isActive && "text-sky-400"}`}
-                      onClick={() => handleLead(label)}
-                    >
-                      {label}
-                    </TransitionLink>
-                  </div>
+                    {label}
+                  </TransitionLink>
                 </div>
               )
             } else if (label === "Інформація") {
               return (
                 <div key={label}>
-                  <Menubar className="h-8 border-0 p-0 space-x-0">
+                  <Menubar className="border-0 p-0 bg-transparent">
                     <MenubarMenu>
                       <MenubarTrigger
-                        className={`w-fit h-8 text-zinc-400 flex justify-center items-center border-zinc-700 rounded-lg cursor-pointer px-[0.885rem] ${isActive && "bg-sky-500/10 text-sky-400 border"}`}
+                        className={`px-0 py-1.5 font-medium text-sm bg-transparent ${
+                          isActive ? "text-gray-900" : "text-gray-500 hover:text-gray-900"
+                        }`}
                       >
-                        <p
-                          className={`text-small-medium font-normal hover:text-sky-400 transition-all ${isActive && "text-sky-400"}`}
-                        >
-                          {label}
-                        </p>
+                        {label}
                       </MenubarTrigger>
-                      <MenubarContent className="min-w-[9rem] bg-zinc-800 text-zinc-400 border-zinc-700 rounded-lg">
+                      <MenubarContent className="min-w-[12rem] bg-white border border-gray-200 rounded-lg shadow-lg p-1">
                         {["contacts", "delivery-payment", "warranty-services"].map((subItem, index) => (
                           <MenubarItem
                             key={subItem}
-                            className="text-small-medium font-normal cursor-pointer hover:text-sky-400 transition-all"
+                            className="rounded-md px-2 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
                           >
-                            <TransitionLink href={`/info/${subItem}`} onClick={() => handleLead(`/info/${subItem}`)}>
-                              {infoNames[index]
-                                .split("-")
-                                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                                .join(" ")}
+                            <TransitionLink
+                              href={`/info/${subItem}`}
+                              onClick={() => handleLead(`/info/${subItem}`)}
+                              className="block w-full"
+                            >
+                              {infoNames[index]}
                             </TransitionLink>
                           </MenubarItem>
                         ))}
@@ -117,25 +110,23 @@ export default function Header({ email, user }: { email: string; user: string })
             } else {
               return (
                 <div key={label}>
-                  <div
-                    className={`w-fit h-8 text-zinc-400 flex justify-center items-center border-zinc-700 rounded-lg px-[0.885rem] ${isActive && "bg-sky-500/10 text-sky-400 border"}`}
+                  <TransitionLink
+                    href={href}
+                    className={`text-sm font-medium transition-colors ${
+                      isActive ? "text-gray-900" : "text-gray-500 hover:text-gray-900"
+                    }`}
                   >
-                    <TransitionLink
-                      href={href}
-                      className={`text-small-medium font-normal hover:text-sky-400 transition-all ${isActive && "text-sky-400"}`}
-                    >
-                      {label}
-                    </TransitionLink>
-                  </div>
+                    {label}
+                  </TransitionLink>
                 </div>
               )
             }
           })}
         </nav>
-        <div className="w-fit flex justify-center items-center max-lg:hidden">
+        <div className="flex items-center max-lg:hidden">
           <Auth email={email} user={user} />
         </div>
-        <div className="w-fit h-8 hidden mt-1 max-lg:flex">
+        <div className="hidden max-lg:block">
           <BurgerMenu email={email} user={user} />
         </div>
       </div>

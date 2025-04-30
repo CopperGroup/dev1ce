@@ -1,18 +1,22 @@
 "use client"
-import { Button } from "../ui/button"
+
+import { Button } from "@/components/ui/button"
 import { useAppContext } from "@/app/(root)/context"
 import { productAddedToCart } from "@/lib/actions/product.actions"
 import { ShoppingCart } from "lucide-react"
 import { trackFacebookEvent } from "@/helpers/pixel"
 
-const AddToCart = ({
-  id,
-  name,
-  image,
-  price,
-  priceWithoutDiscount,
-  variant,
-}: { id: string; name: string; image: string; price: number; priceWithoutDiscount: number; variant?: "full" }) => {
+type AddToCartProps = {
+  id: string
+  name: string
+  image: string
+  price: number
+  priceWithoutDiscount: number
+  variant?: "full"
+  className?: string
+}
+
+const AddToCart = ({ id, name, image, price, priceWithoutDiscount, variant, className }: AddToCartProps) => {
   //@ts-ignore
   const { cartData, setCartData } = useAppContext()
 
@@ -52,25 +56,25 @@ const AddToCart = ({
     return (
       <Button
         onClick={AddDataToCart}
-        className="w-48 max-[425px]:w-full bg-white text-zinc-800 border border-sky-500 hover:bg-sky-500/10 hover:text-zinc-900 transition-all duration-300 group relative overflow-hidden"
+        variant="outline"
+        className={`bg-white text-gray-900 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 ${className}`}
       >
-        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-sky-500/20 to-sky-400/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
-        <ShoppingCart className="mr-2 w-5 h-5 relative z-10" />
-        <span className="relative z-10 text-base-semibold">Додати в кошик</span>
+        <ShoppingCart className="mr-2 h-4 w-4" />
+        <span>Додати в кошик</span>
       </Button>
     )
   } else {
     return (
       <Button
         onClick={AddDataToCart}
-        className="bg-sky-500 text-white hover:bg-sky-500/90 hover:text-zinc-50 border border-sky-500/50 transition-all duration-300 px-3 py-1 h-9 group relative overflow-hidden"
+        variant="outline"
+        className={`bg-white text-gray-900 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 h-9 ${className}`}
       >
-        <ShoppingCart className="mr-1 w-4 h-4 relative z-10" />
-        <span className="relative z-10 text-small-medium">У кошик</span>
+        <ShoppingCart className="mr-1 h-4 w-4" />
+        <span className="text-sm">У кошик</span>
       </Button>
     )
   }
 }
 
 export default AddToCart
-

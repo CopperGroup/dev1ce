@@ -18,8 +18,8 @@ export default function BurgerMenu({ email, user }: { email: string; user: strin
     { label: "Каталог", href: "/catalog?page=1&sort=default" },
     { label: "Обране", href: `/liked/${userInfo?._id}` },
     { label: "Мої замовлення", href: "/myOrders" },
-    { label: "Доставка та оплата", href: "/info/delivery-payment" },
-    { label: "Гарантія та сервіс", href: "/info/warranty-services" },
+    { label: "Доставка та оплата", href: "/shipping" },
+    { label: "Гарантія та сервіс", href: "/warranty" },
   ]
 
   useEffect(() => {
@@ -38,36 +38,39 @@ export default function BurgerMenu({ email, user }: { email: string; user: strin
     <div className="lg:hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-white focus:outline-none relative w-6 h-6 z-50"
-        aria-label={isOpen ? "Close menu" : "Open menu"}
+        className="text-gray-900 focus:outline-none relative w-6 h-6 z-50"
+        aria-label={isOpen ? "Закрити меню" : "Відкрити меню"}
       >
         <span
-          className={`block absolute h-0.5 w-6 bg-current transform transition duration-500 ease-in-out ${isOpen ? "rotate-45" : "-translate-y-2"}`}
+          className={`block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out ${
+            isOpen ? "rotate-45" : "-translate-y-1.5"
+          }`}
         />
         <span
-          className={`block absolute h-0.5 w-6 bg-current transform transition duration-500 ease-in-out ${isOpen ? "opacity-0" : "opacity-100"}`}
+          className={`block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out ${
+            isOpen ? "opacity-0" : "opacity-100"
+          }`}
         />
         <span
-          className={`block absolute h-0.5 w-6 bg-current transform transition duration-500 ease-in-out ${isOpen ? "-rotate-45" : "translate-y-2"}`}
+          className={`block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out ${
+            isOpen ? "-rotate-45" : "translate-y-1.5"
+          }`}
         />
       </button>
 
       <Transition
         show={isOpen}
         enter="transition ease-out duration-200"
-        enterFrom="opacity-0 -translate-y-full"
+        enterFrom="opacity-0 -translate-y-2"
         enterTo="opacity-100 translate-y-0"
         leave="transition ease-in duration-150"
         leaveFrom="opacity-100 translate-y-0"
-        leaveTo="opacity-0 -translate-y-full"
+        leaveTo="opacity-0 -translate-y-2"
       >
-        <div className="fixed inset-x-0 top-20 bottom-0 bg-zinc-900 z-[9999]">
-          <div className="h-full overflow-y-auto py-6 px-4 flex flex-col items-center">
-            <nav className="flex flex-col items-center space-y-4 w-full">
-              <AdminLink
-                className="pt-2 hover:bg-transparent hover:text-sky-500"
-                linkDecoration="text-base-regular"
-              />
+        <div className="fixed inset-x-0 top-16 bottom-0 bg-white z-40 border-t border-gray-200">
+          <div className="h-full overflow-y-auto py-6 px-6 flex flex-col">
+            <nav className="flex flex-col space-y-6 w-full">
+              <AdminLink />
               {Links.map(({ label, href }) => {
                 const isActive = (href.includes(pathname) && pathname.length > 1) || pathname === href
 
@@ -77,39 +80,37 @@ export default function BurgerMenu({ email, user }: { email: string; user: strin
 
                 if (label === "Інформація") {
                   return (
-                    <Menubar key={label} className="border-0 p-0 w-full">
+                    <Menubar key={label} className="border-0 p-0 w-full bg-transparent">
                       <MenubarMenu>
-                        <MenubarTrigger className="w-full flex justify-center items-center text-neutral-400 hover:text-sky-400 focus:text-sky-400">
-                          <span className={`text-center ${isActive ? "text-sky-400" : ""}`}>{label}</span>
+                        <MenubarTrigger className="w-full justify-start px-0 py-0 font-medium text-base bg-transparent hover:bg-transparent focus:bg-transparent">
+                          <span className={`${isActive ? "text-gray-900" : "text-gray-500"}`}>{label}</span>
                         </MenubarTrigger>
-                        <MenubarContent className="bg-zinc-800 text-neutral-400 border-0 rounded-2xl">
+                        <MenubarContent className="bg-white border border-gray-200 rounded-lg shadow-lg p-1 mt-1">
                           <MenubarItem>
                             <TransitionLink
-                              href="/info/about-us"
-                              className="block py-2 w-full text-center hover:text-sky-400"
+                              href="/contact"
+                              className="block py-2 px-3 w-full text-gray-700 hover:bg-gray-100 rounded-md"
+                              onClick={() => setIsOpen(false)}
                             >
-                              Про нас
+                              Контакт
                             </TransitionLink>
                           </MenubarItem>
                           <MenubarItem>
                             <TransitionLink
-                              href="/info/delivery-payment"
-                              className="block py-2 w-full text-center hover:text-sky-400"
+                              href="/shipping"
+                              className="block py-2 px-3 w-full text-gray-700 hover:bg-gray-100 rounded-md"
+                              onClick={() => setIsOpen(false)}
                             >
                               Доставка та оплата
                             </TransitionLink>
                           </MenubarItem>
                           <MenubarItem>
                             <TransitionLink
-                              href="/info/warranty-services"
-                              className="block py-2 w-full text-center hover:text-sky-400"
+                              href="/warranty"
+                              className="block py-2 px-3 w-full text-gray-700 hover:bg-gray-100 rounded-md"
+                              onClick={() => setIsOpen(false)}
                             >
                               Гарантія та сервіс
-                            </TransitionLink>
-                          </MenubarItem>
-                          <MenubarItem>
-                            <TransitionLink href="/blog" className="block py-2 w-full text-center hover:text-sky-400">
-                              Блог
                             </TransitionLink>
                           </MenubarItem>
                         </MenubarContent>
@@ -122,7 +123,7 @@ export default function BurgerMenu({ email, user }: { email: string; user: strin
                   <TransitionLink
                     key={label}
                     href={href}
-                    className={`text-neutral-400 ${isActive ? "text-sky-400" : ""} w-full text-center hover:text-sky-400`}
+                    className={`text-base font-medium ${isActive ? "text-gray-900" : "text-gray-500"}`}
                     onClick={() => setIsOpen(false)}
                   >
                     {label}
@@ -130,8 +131,9 @@ export default function BurgerMenu({ email, user }: { email: string; user: strin
                 )
               })}
             </nav>
-            <div className="mt-6 w-full flex justify-center items-center">
-              <div className="inline-block">
+            <div className="mt-auto pt-6 border-t border-gray-200">
+              <div className="flex flex-col space-y-4">
+                <p className="text-base font-medium text-gray-900">Обліковий запис</p>
                 <Auth email={email} user={user} />
               </div>
             </div>

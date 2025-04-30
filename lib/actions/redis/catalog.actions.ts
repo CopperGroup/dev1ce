@@ -65,7 +65,7 @@ export async function fetchCatalog () {
 
         const combinedChunks = chunks.join('');
     
-        const data = JSON.parse(combinedChunks);
+        const data = JSON.parse(combinedChunks).sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
         
         let stringifiedCategories: { name: string, categoryId: string, totalProducts: number, subCategories: string[] }[] | null = await redis.get("catalog_categories"); // This was supposed to return a string but return an object instead
 
@@ -108,7 +108,7 @@ export async function fetchAndCreateCatalogChunks() {
         
         await clearCatalogCache();
 
-        return filtredProducts;
+        return filtredProducts.sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
     } catch (error: any) {
         throw new Error(`Error fetching catalog data: ${error.message}`);
     }

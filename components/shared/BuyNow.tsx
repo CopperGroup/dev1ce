@@ -1,20 +1,23 @@
 "use client"
-import { Button } from "../ui/button"
+
+import { Button } from "@/components/ui/button"
 import { useAppContext } from "@/app/(root)/context"
 import { productAddedToCart } from "@/lib/actions/product.actions"
 import { trackFacebookEvent } from "@/helpers/pixel"
 import type { ProductType } from "@/lib/types/types"
-import { GiDeliveryDrone } from "react-icons/gi";
 import { useRouter } from "next/navigation"
 import { Rocket } from "lucide-react"
 
-const BuyNow = ({
-  id,
-  name,
-  image,
-  price,
-  priceWithoutDiscount,
-}: { id: string; name: string; image: string; price: number; priceWithoutDiscount: number }) => {
+type BuyNowProps = {
+  id: string
+  name: string
+  image: string
+  price: number
+  priceWithoutDiscount: number
+  className?: string
+}
+
+const BuyNow = ({ id, name, image, price, priceWithoutDiscount, className }: BuyNowProps) => {
   //@ts-ignore
   const { cartData, setPriceToPay, setCartData } = useAppContext()
 
@@ -64,14 +67,12 @@ const BuyNow = ({
   return (
     <Button
       onClick={AddDataToCart}
-      className="max-[425px]:w-full bg-gradient-to-r from-sky-500 to-sky-400 text-white hover:shadow-lg hover:shadow-sky-500/20 transition-all duration-300 relative group overflow-hidden"
+      className={`bg-gray-900 hover:bg-black text-white transition-all duration-300 ${className}`}
     >
-      <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-sky-400 to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
-      <Rocket className="mr-2 relative z-10" size={18} />
-      <span className="relative z-10 text-base-semibold">Придбати миттєво</span>
+      <Rocket className="mr-2 h-4 w-4" />
+      <span>Придбати миттєво</span>
     </Button>
   )
 }
 
 export default BuyNow
-

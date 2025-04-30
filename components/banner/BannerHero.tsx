@@ -4,7 +4,7 @@ import CatalogLinkButton from "../interface/CatalogLinkButton"
 
 export default function BannerHero() {
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-zinc-900">
+    <section className="relative w-full min-h-[80vh] overflow-hidden bg-black">
       <video
         src="/assets/video.mp4"
         autoPlay
@@ -12,22 +12,25 @@ export default function BannerHero() {
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-70"
+        className="absolute inset-0 w-full h-full object-cover opacity-60"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-zinc-900 via-zinc-900/80 to-transparent">
-        <div className="container mx-auto h-full flex items-center">
-          <div className="max-w-2xl space-y-8">
-            <h1 className="font-bold text-white max-[1380px]:text-[72px] max-[1380px]:leading-[81px] max-[1260px]:text-[64px] max-[1260px]:leading-[72px] max-[1130px]:text-[60px] max-[1130px]:leading-[67px] max-[1070px]:text-[56px] max-[1070px]:leading-[63px] max-[450px]:text-[52px] max-[450px]:leading-[60px] max-[425px]:text-[48px] max-[425px]:leading-[55px] max-[400px]:text-[43px] max-[400px]:leading-[50px]">
+      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent">
+        <div className="container mx-auto h-full flex items-center px-6">
+          <div className="max-w-2xl py-20 space-y-8">
+            <h1 className="font-semibold text-white text-6xl leading-tight tracking-tight md:text-7xl">
               Інноваційні
               <br />
-              <span className="text-blue-400">Гаджети</span>
+              <span className="text-gray-300">Гаджети</span>
             </h1>
-            <p className="text-body-medium text-neutral-200 max-w-xl">
+            <p className="text-lg text-gray-300 max-w-xl">
               Відкрийте для себе колекцію сучасних технологій та інновацій для повсякденного життя.
             </p>
-            <div className="flex gap-4 max-[516px]:flex-col">
+            <div className="flex gap-4 flex-wrap">
               <CatalogLinkButton link="/catalog?page=1&sort=default">
-                <Button size="lg" className="bg-sky-500 hover:bg-sky-600 px-8 py-6 text-base-semibold text-white">
+                <Button
+                  size="lg"
+                  className="bg-white text-black hover:bg-gray-100 px-8 py-6 h-auto text-base font-medium rounded-full"
+                >
                   Купити зараз
                 </Button>
               </CatalogLinkButton>
@@ -35,38 +38,38 @@ export default function BannerHero() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-sky-400 hover:bg-sky-500/10 px-8 py-6 text-base-semibold text-white"
+                  className="border-white text-white hover:bg-white/10 px-8 py-6 h-auto text-base font-medium rounded-full"
                 >
                   Переглянути каталог
                 </Button>
               </CatalogLinkButton>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mt-8">
               <div className="flex -space-x-2">
                 <Image
                   src="/assets/t1.jpg"
                   alt="Користувач"
                   width={40}
                   height={40}
-                  className="rounded-full border-2 border-zinc-900"
+                  className="rounded-full border-2 border-black"
                 />
                 <Image
                   src="/assets/t2.jpg"
                   alt="Користувач"
                   width={40}
                   height={40}
-                  className="rounded-full border-2 border-zinc-900"
+                  className="rounded-full border-2 border-black"
                 />
                 <Image
                   src="/assets/t3.jpg"
                   alt="Користувач"
                   width={40}
                   height={40}
-                  className="rounded-full border-2 border-zinc-900"
+                  className="rounded-full border-2 border-black"
                 />
               </div>
-              <p className="text-small-medium text-neutral-300">
-                <span className="text-white font-semibold">1000+</span> задоволених клієнтів цього місяця
+              <p className="text-sm text-gray-300">
+                <span className="text-white font-medium">1000+</span> задоволених клієнтів цього місяця
               </p>
             </div>
           </div>
@@ -75,4 +78,3 @@ export default function BannerHero() {
     </section>
   )
 }
-

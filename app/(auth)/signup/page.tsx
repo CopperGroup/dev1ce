@@ -1,199 +1,214 @@
-"use client";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import {useRouter} from "next/navigation";
-import axios from "axios";
-import GoogleSignIn from "@/components/authButtons/GoogleSignIn";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { useToast } from "@/components/ui/use-toast";
-import { Button } from "@/components/ui/button";
-import { TransitionLink } from "@/components/interface/TransitionLink";
-import { trackFacebookEvent } from "@/helpers/pixel";
-import { Store } from "@/constants/store";
+"use client"
+import Link from "next/link"
+import React, { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import axios from "axios"
+import GoogleSignIn from "@/components/authButtons/GoogleSignIn"
+import { useSession } from "next-auth/react"
+import { useToast } from "@/components/ui/use-toast"
+import { trackFacebookEvent } from "@/helpers/pixel"
+import { Store } from "@/constants/store"
+import { AtSign, User, Lock, Phone, AlertCircle, Loader2 } from 'lucide-react'
 
 export default function SignupPage() {
-    const session = useSession();
-    const router = useRouter();
-    const { toast } = useToast()
-    useEffect(() => {
-        if (session.status === 'authenticated') {
-          router.replace("/");
-        }
-    }, [session]);
- 
+  const session = useSession()
+  const router = useRouter()
+  const { toast } = useToast()
 
-    const [user, setUser] = React.useState({
-        email: "",
-        password: "",
-        username: ""
-    })
-
-    const [error, setError] = useState('');
-    const [disabled, setDisabled] = React.useState(false);
-    const [wasSended, setWasSended] = useState(false);
-
-
-    const onSignup = async () => {
-        try {               
-          
-          const response = await axios.post("/api/users/signup", user);
-          // setWasSended(true);
-          
-          trackFacebookEvent("CompleteRegistration", {
-            registration_method: "email",
-          });
-
-          router.push('/login')
-        } catch (error: any) {
-            console.log(error.message);
-           
-            setError('Акаунт вже існує')
-        }
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      router.replace("/")
     }
+  }, [session, router])
 
-   
+  const [user, setUser] = React.useState({
+    email: "",
+    password: "",
+    username: "",
+    phoneNumber: "",
+  })
 
-    useEffect(() => {
-        if(user.email.length > 0 && user.password.length > 0 && user.username.length > 0) {
-            setDisabled(false);
-        } else {
-            setDisabled(true);
-        }
-    }, [user]);
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [disabled, setDisabled] = React.useState(true)
 
+  const onSignup = async () => {
+    try {
+      setIsLoading(true)
+      setError("")
 
-    return (
-        <main className="w-full h-screen flex flex-1">
-        <div className="w-2/5 max-w-[40rem] h-full flex flex-col justify-center items-center max-[1640px]:max-w-[44rem] max-[1640px]:w-1/2 max-[1010px]:hidden">
-          <div className="w-full flex items-center h-20 px-7">
-            <Link href="/" className="text-heading3-bold pl-3">{Store.name}</Link>
-          </div>
-          <div className="w-full h-full flex justify-center items-center px-28 py-20 overflow-y-auto max-[1600px]:px-24 max-[1340px]:px-20 max-[1095px]:px-16">
-            <div className="w-full h-full flex-col justify-center flex-1">
-            {wasSended
-                 ?
-                 <div>
-                     <h1 className="text-heading1-semibold text-dark-3 font-[550] mt-5 mb-1">Лист Відправлено!</h1>
-                     <p className="text-gray-700 text-[17px] mt-3">Перевірте вашу електронну адресу на наявність листа! <br/>Не забудьте подиввитися у папці &quot;Спам&quot;!</p>
-                     <Image src='assets/mail.svg' width={100} height={100} alt="" className="mx-auto my-10"></Image>
-                 </div>
-                 :
-                (<>
-                    <h3 className="text-heading1-semibold text-dark-3 font-[550] mt-5 mb-1">Sign up</h3>
-                    <p className="text-dark-4 mb-8">Продовжте з Google, або введіть дані самостійно.</p>
-                    <GoogleSignIn className="" label="Sign up with Google"/>
-                    <div className="relative w-full h-7 flex gap-1 shrink-0 items-center justify-between my-12">
-                      <div className="w-[47%] h-[2px] bg-stone-100"></div>
-                      <p className="w-10 bg-trasnparent text-center rounded-2xl px-3">or</p>
-                      <div className="w-[47%] h-[2px] bg-stone-100"></div>
-                    </div>
-                    <div className="flex flex-col text-center">
-                        <label htmlFor="username"></label>
-                        <input 
-                            className="bg-transparent appearance-none rounded-none border-b-2 border-stone-200 font-medium focus:outline-none focus:border-gray-600 text-black placeholder-slate-600 p-2 mb-4"
-                            id="username"
-                            type="text"
-                            value={user.username}
-                            onChange={(e) => {setUser({...user, username: e.target.value}); setError('')}}
-                            placeholder="Name"
-                        />
-                        <label htmlFor="email"></label>
-                        <input 
-                        className="bg-transparent appearance-none rounded-none border-b-2 border-stone-200 font-medium focus:outline-none focus:border-gray-600 text-black placeholder-slate-600 p-2 mb-4"
-                            id="email"
-                            type="text"
-                            value={user.email}
-                            onChange={(e) => {setUser({...user, email: e.target.value}); setError('')}}
-                            placeholder="Email"
-                        />
-                        <label htmlFor="password"></label>
-                        <input 
-                            className="bg-transparent appearance-none rounded-none border-b-2 border-stone-200 font-medium focus:outline-none focus:border-gray-600 text-black placeholder-slate-600 p-2 mb-4"
-                            id="password"
-                            type="password"
-                            value={user.password}
-                            onChange={(e) => setUser({...user, password: e.target.value})}
-                            placeholder="Password"
-                        />
-                        {error && (
-                        <div className="w-full bg-red-500 text-white text-small-regular py-1 px-3 rounded-md mt-2 mb-3">
-                            {error}
-                        </div>
-                        )} 
-                        {disabled?<button className="w-full mx-auto py-3 px-10 font-medium tracking-wide border bg-gray-50 border-gray-300 text-gray-300 rounded-lg pointer-events-none mt-9 mb-4">Зареєструватися</button>
-                        :<button onClick={onSignup} className="w-full mx-auto py-3 px-10 bg-black text-white font-medium tracking-wide border border-gray-300 rounded-lg focus:outline-none hover:border-slate-950 transition-colors duration-300 mt-9 mb-4">Зареєструватися</button>}
-                    
-                        <div className="w-full h-fit text-[15px] flex gap-1 justify-center items-center mt-5 mb-7 max-[1255px]:flex-col"><p>Маєте акакунт?</p><TransitionLink type="left" href="/login" className="font-semibold">Увійти зараз</TransitionLink></div>
-                    </div>
-                </>)}
+      const response = await axios.post("/api/users/signup", user)
+
+      trackFacebookEvent("CompleteRegistration", {
+        registration_method: "email",
+      })
+
+      toast({
+        title: "Реєстрація успішна!",
+        description: "Ваш обліковий запис було створено.",
+        variant: "default",
+      })
+
+      router.push("/login")
+    } catch (error: any) {
+      console.log(error.message)
+      setError("Акаунт вже існує або виникла помилка при реєстрації")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (user.email.length > 0 && user.password.length > 0 && user.username.length > 0 && user.phoneNumber.length > 0) {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
+  }, [user])
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col justify-center items-center px-4 mt-10">
+      <div className="w-full max-w-md">
+        <Link href="/" className="flex justify-center mb-8">
+          <h1 className="text-2xl font-medium text-gray-900">{Store.name}</h1>
+        </Link>
+        
+        <h2 className="text-3xl font-light text-center text-gray-900 mb-2">Створити обліковий запис</h2>
+        <p className="text-center text-gray-500 mb-8">Заповніть форму для створення облікового запису</p>
+        
+        <div className="space-y-6">
+          <form className="space-y-4">
+            {error && (
+              <div className="flex items-center p-3 text-sm text-red-500 bg-red-50 rounded-lg">
+                <AlertCircle className="flex-shrink-0 w-4 h-4 mr-2" />
+                <span>{error}</span>
+              </div>
+            )}
+            
+            <div className="space-y-2">
+              <div className="relative">
+                <input
+                  id="username"
+                  type="text"
+                  value={user.username}
+                  onChange={(e) => {
+                    setUser({ ...user, username: e.target.value })
+                    setError("")
+                  }}
+                  className="block w-full px-4 py-3.5 text-gray-900 bg-gray-50 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+                  placeholder="Ім'я"
+                  required
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="relative w-4/5 h-full flex justify-center items-center overflow-hidden max-[1010px]:flex-col max-[1010px]:w-full max-[1010px]:rounded-none" style={{ backgroundImage: `url(/assets/loginbackground.jpg)`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-          <h1 className="text-[56px] text-center font-medium bg-black text-white py-2 px-5 max-[1010px]:text-[48px] max-[1010px]:w-full max-[390px]:text-[40px]">{Store.name}</h1>
-          <div className="w-full text-white justify-center items-center px-28 py-5 overflow-y-auto min-[1010px]:hidden max-[600px]:px-16 max-[455px]:px-12 max-[360px]:px-10 max-[340px]:px-7 bg-black/45">
-            <div className="w-full h-fit flex flex-col flex-1 mb-10">
-            {wasSended
-                 ?
-                 <div>
-                     <h1 className="w-full text-heading1-semibold text-center text-slate-200 font-[550] mt-5 mb-1">Лист Відправлено!</h1>
-                     <p className="w-full text-slate-200 text-center mb-8">Перевірте вашу електронну адресу на наявність листа! <br/>Не забудьте подиввитися у папці &quot;Спам&quot;!</p>
-                      <Image src="/assets/mail-white.svg" width={100} height={100} alt="" className="mx-auto my-10"></Image>
-                 </div>
-                 :
-                (<>
-                  <h3 className="text-heading1-semibold text-slate-200 font-[550] mt-5 mb-1">Sign up</h3>
-                  <p className="text-slate-200 mb-8">Продовжте з Google, або введіть дані самостійно.</p>
-                  <GoogleSignIn className="bg-glass text-white border-white bg-opacity-5" label="Sign up with Google"/>
-                  <div className="relative w-full h-7 flex gap-1 shrink-0 items-center justify-between my-12">
-                    <div className="w-[47%] h-[2px] bg-stone-100"></div>
-                    <p className="w-10 bg-glass text-center rounded-2xl px-3">or</p>
-                    <div className="w-[47%] h-[2px] bg-stone-100"></div>
-                  </div>
-                  <div className="flex flex-col text-center">
-                    <label htmlFor="username"></label>
-                    <input 
-                        className="bg-transparent appearance-none rounded-none border-b-2 border-stone-200 font-medium focus:outline-none focus:border-white text-slate-200 placeholder-slate-300 p-2 mb-4"
-                        id="username"
-                        type="text"
-                        value={user.username}
-                        onChange={(e) => setUser({...user, username: e.target.value})}
-                        placeholder="Name"
-                    />
-                    <label htmlFor="email"></label>
-                    <input 
-                      className="bg-transparent appearance-none rounded-none border-b-2 border-stone-200 font-medium focus:outline-none focus:border-white text-slate-200 placeholder-slate-300 p-2 mb-4"
-                        id="email"
-                        type="text"
-                        value={user.email}
-                        onChange={(e) => setUser({...user, email: e.target.value})}
-                        placeholder="Email"
-                    />
-                    <label htmlFor="password"></label>
-                    <input 
-                        className="bg-transparent appearance-none rounded-none border-b-2 border-stone-200 font-medium focus:outline-none focus:border-white text-slate-200 placeholder-slate-300 p-2 mb-4"
-                        id="password"
-                        type="password"
-                        value={user.password}
-                        onChange={(e) => setUser({...user, password: e.target.value})}
-                        placeholder="Password"
-                    />  
-                    {error && (
-                      <div className="w-full bg-red-500 text-white text-small-regular py-1 px-3 rounded-md mt-2 mb-3">
-                        {error}
-                      </div>
-                    )} 
-                    {disabled ? <button className="w-full mx-auto py-3 px-10 font-medium tracking-wide border bg-gray-50 border-gray-300 text-gray-300 rounded-lg pointer-events-none mt-9 mb-4">Зареєструватися</button>
-                      :<button onClick={onSignup} className="w-full mx-auto py-3 px-10 text-white font-medium tracking-wide border border-gray-300 rounded-lg focus:outline-none hover:border-slate-950 transition-colors duration-300 mt-9 mb-4">Зареєструватися</button>}
-                  
-                  <div className="w-full h-fit text-[15px] flex gap-1 justify-center items-center my-5 mb-3"><p>Маєте акакунт?</p><TransitionLink href="/login" className="font-semibold">Увійти зараз</TransitionLink></div>
-                  </div>
-                </>)} 
-            </div>
-          </div>
-        </div>
-      </main>
-    )
 
+            <div className="space-y-2">
+              <div className="relative">
+                <input
+                  id="email"
+                  type="email"
+                  value={user.email}
+                  onChange={(e) => {
+                    setUser({ ...user, email: e.target.value })
+                    setError("")
+                  }}
+                  className="block w-full px-4 py-3.5 text-gray-900 bg-gray-50 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+                  placeholder="Email"
+                  required
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                  <AtSign className="h-5 w-5 text-gray-400" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="relative">
+                <input
+                  id="phoneNumber"
+                  type="tel"
+                  value={user.phoneNumber}
+                  onChange={(e) => {
+                    setUser({ ...user, phoneNumber: e.target.value })
+                    setError("")
+                  }}
+                  className="block w-full px-4 py-3.5 text-gray-900 bg-gray-50 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+                  placeholder="Номер телефону"
+                  required
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                  <Phone className="h-5 w-5 text-gray-400" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="relative">
+                <input
+                  id="password"
+                  type="password"
+                  value={user.password}
+                  onChange={(e) => {
+                    setUser({ ...user, password: e.target.value })
+                    setError("")
+                  }}
+                  className="block w-full px-4 py-3.5 text-gray-900 bg-gray-50 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+                  placeholder="Пароль"
+                  required
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={onSignup}
+              disabled={disabled || isLoading}
+              className={`w-full flex justify-center items-center py-3.5 px-4 rounded-lg text-white text-base font-medium transition-all duration-200 ${
+                disabled || isLoading
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-gray-900 hover:bg-black"
+              }`}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Реєстрація...
+                </>
+              ) : (
+                "Зареєструватися"
+              )}
+            </button>
+          </form>
+
+          <div className="relative flex items-center justify-center">
+            <div className="flex-grow h-px bg-gray-200"></div>
+            <span className="px-4 text-sm text-gray-500 bg-white">або</span>
+            <div className="flex-grow h-px bg-gray-200"></div>
+          </div>
+
+          <GoogleSignIn
+            className="w-full flex justify-center items-center py-3.5 px-4 bg-white border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-all duration-200"
+            label="Зареєструватися через Google"
+          />
+
+          <p className="text-center text-gray-500 text-sm">
+            Вже маєте обліковий запис?{" "}
+            <Link href="/login" className="text-gray-900 font-medium hover:underline">
+              Увійти
+            </Link>
+          </p>
+        </div>
+      </div>
+      
+      <footer className="mt-16 text-center text-sm text-gray-500">
+        <p>&copy; {new Date().getFullYear()} {Store.name}. Усі права захищені.</p>
+      </footer>
+    </div>
+  )
 }

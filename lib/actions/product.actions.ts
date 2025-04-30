@@ -85,7 +85,7 @@ export async function createUrlProductsMany(products: CreateUrlParams[]) {
     } catch (error: any) {
       throw new Error(`Error creating url-product, ${error.message}`);
     }
-  }
+}
   
 
 export async function updateUrlProductsMany(products: Partial<CreateUrlParams>[]) {
@@ -600,7 +600,11 @@ export async function fetchProductAndRelevantParams(
   try {
     connectToDB();
 
-    const currentProduct = await Product.findById(currentProductId);
+    const currentProduct = await Product.findById(currentProductId)
+    .populate({
+        path: "category",
+        model: Category
+    });
     if (!currentProduct) {
       throw new Error("Current product not found");
     }
@@ -693,22 +697,6 @@ export async function fetchPreviewProduct({ param }: { param: string }, type?: '
    }
 }
 
-// export async function findProductCategories({ productId }: { productId: string }): Promise<CategoryType[]>;
-// export async function findProductCategories({ productId }: { productId: string }, type: 'json'): Promise<string>;
-
-// export async function findProductCategories({ productId }: { productId: string }, type?: 'json') {
-//    try {
-      
-//     if(type === 'json'){
-//       return JSON.stringify(params)
-//     } else {
-//       return params
-//     }
-//    } catch (error: any) {
-//      throw new Error(`${error.message}`)
-//    }
-// }
-
 export async function fetchPurchaseNotificationsInfo(): Promise<{ id: string, name: string, image: string }[]> {
   try {
     await connectToDB();
@@ -718,5 +706,23 @@ export async function fetchPurchaseNotificationsInfo(): Promise<{ id: string, na
     return products.map(p => ({ id: p._id.toString(), name: pretifyProductName(p.name, [], p.articleNumber || "", 0), image: p.images[0] }))
   } catch (error: any) {
     throw new Error(`Error finding purchase notifications info: ${error.message}`)
+  }
+}
+
+export async function getTop3ProductsBySales() {
+  try {
+    const topProducts = await Product.aggregate([
+      {
+        $addFields: {
+          salesCount: { $size: { $ifNull: ["$orderedBy", []] } }
+        }
+      },
+      { $sort: { salesCount: -1 } },
+      { $limit: 3 }
+    ]);
+
+    return topProducts;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch top products: ${error.message}`);
   }
 }

@@ -44,7 +44,6 @@ export default function StickyCart() {
         ref={cartButtonRef}
         className="fixed bottom-8 right-8 z-[100] flex flex-col gap-4 max-sm:bottom-4 max-sm:right-4"
       >
-
         {/* Cart Button */}
         <motion.div
           whileHover={{ scale: 1.05 }}
@@ -54,7 +53,7 @@ export default function StickyCart() {
         >
           <Button
             onClick={toggleCart}
-            className="size-16 bg-white rounded-full shadow-lg flex items-center justify-center border border-gray-200 transition-all duration-300 ease-in-out hover:bg-white max-sm:size-14 relative"
+            className="size-16 bg-white rounded-full shadow-md flex items-center justify-center border border-gray-200 transition-all duration-300 ease-in-out hover:bg-gray-50 max-sm:size-14 relative"
           >
             <AnimatePresence>
               {cartData.length > 0 && (
@@ -63,13 +62,13 @@ export default function StickyCart() {
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0, opacity: 0 }}
-                  className="absolute top-0 right-0 bg-sky-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center"
+                  className="absolute -top-1 -right-1 bg-gray-900 text-white text-xs font-medium rounded-full w-6 h-6 flex items-center justify-center"
                 >
                   {cartData.length}
                 </motion.div>
               )}
             </AnimatePresence>
-            <ShoppingBag className="w-8 h-8 text-black drop-shadow-sm max-sm:w-6 max-sm:h-6" />
+            <ShoppingBag className="w-7 h-7 text-gray-900 max-sm:w-6 max-sm:h-6" />
           </Button>
         </motion.div>
       </div>
@@ -77,18 +76,26 @@ export default function StickyCart() {
       {/* Cart Slide-in Panel */}
       <AnimatePresence>
         {isOpened && (
-          <motion.div
-            className="fixed h-full bg-white max-w-[400px] w-full z-50 top-0 right-0 shadow-2xl"
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <CartPage setIsOpened={setIsOpened} />
-          </motion.div>
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpened(false)}
+            />
+            <motion.div
+              className="fixed h-full bg-white max-w-[400px] w-full z-50 top-0 right-0 shadow-xl"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <CartPage setIsOpened={setIsOpened} />
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
   )
 }
-

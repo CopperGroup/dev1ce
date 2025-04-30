@@ -78,6 +78,12 @@ const productSchema = new mongoose.Schema({
 
     deliveryStatus: {
         type: String
+    },
+    promocode: {
+        type: String
+    },
+    discount: {
+        type: Number
     }
 })
 

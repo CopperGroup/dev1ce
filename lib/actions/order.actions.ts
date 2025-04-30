@@ -11,22 +11,25 @@ import clearCache from "./cache";
 import { generateLongPassword } from "../utils";
 
 interface CreateOrderParams {
-    products: {
-        product: string,
-        amount: number
-    } [],
-    userId: string;
-    value: number;
-    name: string;
-    surname: string;
-    phoneNumber: string;
-    email: string;
-    paymentType: string;
-    deliveryMethod: string;
-    city: string;
-    adress: string;
-    postalCode: string;
-    comment: string | undefined;
+  products: {
+    product: string,
+    amount: number
+  } [],
+  userId: string;
+  value: number;
+  name: string;
+  surname: string;
+  phoneNumber: string;
+  email: string;
+  paymentType: string;
+  deliveryMethod: string;
+  city: string;
+  adress: string;
+  postalCode: string;
+  comment: string | undefined;
+  discount: number | undefined,
+  promocode: string | undefined,
+  promoResult: string | undefined;
 }
 
 interface Product {
@@ -82,7 +85,7 @@ function generateUniqueId() {
     return randomPart + timestampPart; // Concatenate both parts to form an 8-digit ID
 }
 
-export async function createOrder({ products, userId, value, name, surname, phoneNumber, email, paymentType, deliveryMethod, city, adress, postalCode, comment }: CreateOrderParams, type?: "json") {
+export async function createOrder(params: CreateOrderParams, type?: "json") {
   try {
       connectToDB();
 
@@ -90,15 +93,15 @@ export async function createOrder({ products, userId, value, name, surname, phon
 
       let user = null;
 
-      if (!userId) {
-          user = await User.findOne({ email });
+      if (!params.userId) {
+          user = await User.findOne({ email: params.email });
 
           if (!user) {
               user = await User.create({
-                  name,
-                  surname,
-                  phoneNumber,
-                  email,
+                  name: params.name,
+                  surname: params.surname,
+                  phoneNumber: params.phoneNumber,
+                  email: params.email,
                   totalOrders: 0,
                   orders: [],
                   password: generateLongPassword(),
@@ -106,9 +109,9 @@ export async function createOrder({ products, userId, value, name, surname, phon
               });
           }
 
-          userId = user._id;
+          params.userId = user._id;
       } else {
-          user = await User.findById(userId);
+          user = await User.findById(params.userId);
 
           if (!user) {
               throw new Error("User not found");
@@ -116,28 +119,30 @@ export async function createOrder({ products, userId, value, name, surname, phon
       }
 
       await user.updateOne({
-          name,
-          surname,
-          phoneNumber,
+          name: params.name,
+          surname: params.surname,
+          phoneNumber: params.phoneNumber,
       });
 
       const createdOrder = await Order.create({
           id: uniqueId,
-          products,
-          user: userId,
-          value,
-          name,
-          surname,
-          phoneNumber,
-          email,
-          paymentType,
-          deliveryMethod,
-          city,
-          adress,
-          postalCode,
-          comment: comment || "",
+          products: params.products,
+          user: params.userId,
+          value: params.value,
+          name: params.name,
+          surname: params.surname,
+          phoneNumber: params.phoneNumber,
+          email: params.email,
+          paymentType: params.paymentType,
+          deliveryMethod: params.deliveryMethod,
+          city: params.city,
+          adress: params.adress,
+          postalCode: params.postalCode,
+          comment: params.comment || "",
           paymentStatus: "Pending",
           deliveryStatus: "Proceeding",
+          discount: params.discount,
+          promocode: params.promocode
       });
 
       user.orders.push({
@@ -146,9 +151,14 @@ export async function createOrder({ products, userId, value, name, surname, phon
       });
 
       user.totalOrders += 1;
+
+      user.discounts = user.discounts.map((code: string) =>
+        code === params.promocode ? params.promoResult : code
+      );
+    
       await user.save();
 
-      for (const product of products) {
+      for (const product of params.products) {
           const orderedProduct = await Product.findById(product.product);
 
           if (!orderedProduct) {

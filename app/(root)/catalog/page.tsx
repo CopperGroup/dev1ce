@@ -130,6 +130,7 @@ const Catalog = async ({searchParams }:any) => {
                     name={pretifyProductName(product.name, [], product.articleNumber || "", 0)}
                     // @ts-ignore
                     likedBy={product.likedBy}
+                    reviews={product.reviews}
                   />
               
                 </div>
