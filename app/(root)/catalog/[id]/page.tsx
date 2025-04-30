@@ -40,7 +40,6 @@ export async function generateMetadata({ params }: Props, parent: ResolvingMetad
   )
 
   // Generate keywords
-  // @ts-ignore
   const keywords = generateKeywords(productName, product.category[0].name, product.params)
 
   // Generate SEO title
@@ -176,9 +175,7 @@ async function generateBreadcrumbStructuredData(productId: string) {
       {
         "@type": "ListItem",
         position: 2,
-        // @ts-ignore
         name: product.category[0].name,
-        // @ts-ignore
         item: `${Store.domain}/catalog?categories=${product.category[0]._id}`,
       },
       {
@@ -204,6 +201,9 @@ const Page = async ({ params }: Props) => {
 
   return (
     <>
+      {/* Preload the main product image */}
+      <link rel="preload" href={product.images[0]} as="image" fetchPriority="high" />
+
       {/* Product Schema */}
       <script
         type="application/ld+json"
