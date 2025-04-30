@@ -20,7 +20,7 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '10mb'
     },
-    optimizeCss: true,
+    // optimizeCss: true,
     optimizeServerReact: true,
   }
 };
