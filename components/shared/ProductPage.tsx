@@ -18,14 +18,15 @@ import type { CategoryType } from "@/lib/types/types"
 import Link from "next/link"
 
 // Dynamically import components that aren't needed immediately
-const ProductImagesCarousel = dynamic(() => import("../interface/ProductImagesCarousel"), {
-  ssr: true, // Change from false to true
-  loading: () => (
-    <div className="aspect-square bg-gray-100 rounded-2xl flex items-center justify-center w-full">
-      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 border-gray-300 border-t-gray-800 animate-spin"></div>
-    </div>
-  ),
-})
+// Remove this:
+// const ProductImagesCarousel = dynamic(() => import("../interface/ProductImagesCarousel"), {
+//  ssr: true,
+//  loading: () => (
+//    <div className="aspect-square bg-gray-100 rounded-2xl flex items-center justify-center w-full">
+//      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 border-gray-300 border-t-gray-800 animate-spin"></div>
+//    </div>
+//  ),
+// })
 
 const ProductVariantSelector = dynamic(() => import("../interface/ProductVariantSelector"), {
   ssr: false,
@@ -407,8 +408,13 @@ export default function ProductPage({
         <meta name="revisit-after" content="7 days" />
         <meta name="author" content={Store.name} />
 
-        {/* Preload LCP image */}
-        <link rel="preload" href={product.images[0]} as="image" fetchPriority="high" crossOrigin="anonymous" />
+        {/* Preload LCP image with high priority */}
+        <link rel="preload" href={product.images[0]} as="image" fetchPriority="high" />
+
+        {/* Add preconnect for image domain */}
+        {product.images[0]?.includes("rozetka.com.ua") && (
+          <link rel="preconnect" href="https://content.rozetka.com.ua" crossOrigin="anonymous" />
+        )}
       </Head>
 
       {/* Enhanced Schema.org JSON-LD */}
@@ -556,15 +562,76 @@ export default function ProductPage({
           className="max-w-[1200px] mx-auto px-3 sm:px-6 pb-12 sm:pb-24 pt-3 sm:pt-6 overflow-hidden"
         >
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16">
-            {/* Product Images Section - Fixed height container with optimized loading */}
-            <div className="w-full max-w-full overflow-hidden" style={{ minHeight: "400px" }}>
-              {!hasMounted ? (
-                <div className="aspect-square bg-gray-100 rounded-2xl flex items-center justify-center w-full">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 border-gray-300 border-t-gray-800 animate-spin"></div>
+            {/* Product Images Section - Direct image rendering for LCP optimization */}
+            <div className="w-full max-w-full overflow-hidden">
+              <div className="relative aspect-square rounded-xl sm:rounded-2xl bg-[#fafafa] w-full">
+                {/* Main Product Image - Directly rendered for fastest LCP */}
+                <Image
+                  src={product.images[0] || "/placeholder.svg"}
+                  alt={`${pretifiedName} - головне зображення`}
+                  fill
+                  priority={true}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-contain p-4 sm:p-8"
+                  quality={85}
+                />
+
+                {/* Show image navigation only if there are multiple images */}
+                {product.images.length > 1 && hasMounted && (
+                  <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                    {product.images.slice(0, 5).map((_, index) => (
+                      <button
+                        key={index}
+                        className={`w-2 h-2 rounded-full ${index === 0 ? "bg-gray-800" : "bg-gray-300"}`}
+                        aria-label={`Go to image ${index + 1}`}
+                        onClick={() => {
+                          // We'll implement the full carousel functionality later
+                          // This is just for visual indication now
+                        }}
+                      />
+                    ))}
+                    {product.images.length > 5 && (
+                      <span className="text-xs text-gray-500">+{product.images.length - 5}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Thumbnails - only show if more than one image and after mounting */}
+              {product.images.length > 1 && hasMounted && (
+                <div className="mt-3 sm:mt-6">
+                  <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 no-scrollbar justify-center">
+                    {product.images.slice(0, 5).map((img, index) => (
+                      <button
+                        key={index}
+                        className={`flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden transition-all duration-300 ${
+                          index === 0
+                            ? "ring-2 ring-gray-900 ring-offset-2"
+                            : "ring-1 ring-gray-200 hover:ring-gray-300"
+                        }`}
+                        aria-label={`Переглянути зображення ${index + 1}`}
+                        onClick={() => {
+                          // We'll implement the full carousel functionality later
+                          // For now, just show the first image for fastest LCP
+                        }}
+                      >
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={img || "/placeholder.svg"}
+                            alt={`Мініатюра ${index + 1}`}
+                            fill
+                            sizes="64px"
+                            className="object-cover"
+                            loading="lazy"
+                            quality={60}
+                          />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              ) : (
-                <ProductImagesCarousel images={product.images} />
               )}
+
               <meta itemProp="image" content={product.images[0]} />
             </div>
 

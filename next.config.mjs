@@ -18,48 +18,25 @@ const nextConfig = {
         {
           protocol: 'https',
           hostname: '**.rozetka.com.ua',
-          pathname: '/goods/images/**',
+          port: '',
+          pathname: '/**',
         },
       ],
-      minimumCacheTTL: 31536000, // 1 year
-      deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+      minimumCacheTTL: 31536000,
+      deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
       imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-      unoptimized: true,
+      unoptimized: false,
+      dangerouslyAllowSVG: true,
+      contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb'
     },
     // optimizeCss: true,
+    largePageDataBytes: 128 * 1000,
     optimizeServerReact: true,
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/image-proxy/:path*',
-        destination: 'https://content.rozetka.com.ua/:path*',
-      },
-      {
-        source: '/image-proxy-1/:path*',
-        destination: 'https://content1.rozetka.com.ua/:path*',
-      },
-      {
-        source: '/image-proxy-2/:path*',
-        destination: 'https://content2.rozetka.com.ua/:path*',
-      },
-      {
-        source: '/image-proxy-3/:path*',
-        destination: 'https://content3.rozetka.com.ua/:path*',
-      },
-      {
-        source: '/image-proxy-4/:path*',
-        destination: 'https://content4.rozetka.com.ua/:path*',
-      },
-      {
-        source: '/image-proxy-5/:path*',
-        destination: 'https://content5.rozetka.com.ua/:path*',
-      },
-    ]
+    
   },
 };
 

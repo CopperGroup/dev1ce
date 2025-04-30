@@ -1,6 +1,5 @@
 "use client"
 
-import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
@@ -14,12 +13,8 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
-  const [startX, setStartX] = useState(0)
-  const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({})
-  const carouselRef = useRef<HTMLDivElement>(null)
   const thumbnailsContainerRef = useRef<HTMLDivElement>(null)
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([])
-  const [mainImageLoaded, setMainImageLoaded] = useState(false)
 
   // Check if we need thumbnail navigation (more than 5 images)
   const needsThumbnailNav = images.length > 5
@@ -48,18 +43,6 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
     }
   }
 
-  // Handle image load events
-  const handleImageLoaded = (index: number) => {
-    setImagesLoaded((prev) => ({
-      ...prev,
-      [index]: true,
-    }))
-
-    if (index === 0) {
-      setMainImageLoaded(true)
-    }
-  }
-
   // Scroll thumbnails left
   const scrollThumbnailsLeft = () => {
     if (thumbnailsContainerRef.current) {
@@ -74,77 +57,7 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
     }
   }
 
-  // Touch handlers for mobile swipe
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setStartX(e.touches[0].clientX)
-  }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!carouselRef.current) return
-
-    const currentX = e.touches[0].clientX
-    const diff = startX - currentX
-
-    // Prevent default only when swiping horizontally to allow vertical scrolling
-    if (Math.abs(diff) > 5) {
-      e.preventDefault()
-    }
-  }
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const currentX = e.changedTouches[0].clientX
-    const diff = startX - currentX
-
-    // Threshold for swipe detection
-    if (diff > 50 && currentIndex < images.length - 1) {
-      nextSlide()
-    } else if (diff < -50 && currentIndex > 0) {
-      prevSlide()
-    }
-  }
-
-  // Preload the first image immediately on component mount
-  useEffect(() => {
-    if (images.length > 0 && typeof window !== "undefined") {
-      // Create a new image element to preload the first image
-      const img = new window.Image()
-      img.crossOrigin = "anonymous"
-      img.src = images[0]
-      img.onload = () => handleImageLoaded(0)
-
-      // Also add a preload link to the document head for the first image
-      const link = document.createElement("link")
-      link.rel = "preload"
-      link.as = "image"
-      link.href = images[0]
-      link.crossOrigin = "anonymous"
-      document.head.appendChild(link)
-    }
-  }, [images])
-
-  // Preload adjacent images after the first one is loaded
-  useEffect(() => {
-    // Only run in browser environment
-    if (typeof window === "undefined" || !mainImageLoaded) return
-
-    // Preload next image if it exists
-    if (currentIndex < images.length - 1 && !imagesLoaded[currentIndex + 1]) {
-      const nextImg = new window.Image()
-      nextImg.crossOrigin = "anonymous"
-      nextImg.src = images[currentIndex + 1]
-      nextImg.onload = () => handleImageLoaded(currentIndex + 1)
-    }
-
-    // Preload previous image if it exists
-    if (currentIndex > 0 && !imagesLoaded[currentIndex - 1]) {
-      const prevImg = new window.Image()
-      prevImg.crossOrigin = "anonymous"
-      prevImg.src = images[currentIndex - 1]
-      prevImg.onload = () => handleImageLoaded(currentIndex - 1)
-    }
-  }, [currentIndex, images, imagesLoaded, mainImageLoaded])
-
-  // Scroll selected thumbnail into view
+  // Reset transition state after animation completes
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsTransitioning(false)
@@ -165,64 +78,18 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
   return (
     <div className="space-y-3 sm:space-y-6 w-full max-w-full">
       {/* Main Image */}
-      <div
-        className="relative rounded-xl sm:rounded-2xl bg-[#fafafa] w-full"
-        ref={carouselRef}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      <div className="relative rounded-xl sm:rounded-2xl bg-[#fafafa] w-full overflow-hidden">
         <div className="aspect-square relative w-full">
-          {/* Static first image for LCP optimization */}
-          {currentIndex === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <img
-                src={images[0] || "/placeholder.svg"}
-                alt="Зображення товару 1"
-                className={`object-contain p-4 sm:p-8 max-h-full max-w-full transition-opacity duration-300 ${
-                  imagesLoaded[0] ? "opacity-100" : "opacity-0"
-                }`}
-                style={{ width: "100%", height: "100%" }}
-                onLoad={() => handleImageLoaded(0)}
-                fetchPriority="high"
-                loading="eager"
-              />
-            </div>
-          )}
-
-          {/* Dynamic carousel for other images */}
-          <div
-            className={`absolute inset-0 flex transition-transform duration-500 ease-out ${currentIndex === 0 ? "opacity-0" : "opacity-100"}`}
-            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-          >
-            {images.map((image, index) => (
-              <div key={index} className="w-full h-full flex-shrink-0 relative">
-                {/* Only render images that are visible or adjacent to visible */}
-                {Math.abs(index - currentIndex) <= 1 && index !== 0 && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Image
-                      src={image || "/placeholder.svg"}
-                      alt={`Зображення товару ${index + 1}`}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className={`object-contain p-4 sm:p-8 transition-opacity duration-300 ${
-                        imagesLoaded[index] ? "opacity-100" : "opacity-0"
-                      }`}
-                      loading="lazy"
-                      onLoad={() => handleImageLoaded(index)}
-                    />
-                  </div>
-                )}
-
-                {/* Show optimized skeleton loader while image is loading */}
-                {!imagesLoaded[index] && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                    <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-full border-4 border-gray-300 border-t-gray-800 animate-spin"></div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          {/* Use Next.js Image component with priority for the first image */}
+          <Image
+            src={images[currentIndex] || "/placeholder.svg"}
+            alt={`Зображення товару ${currentIndex + 1}`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-contain p-4 sm:p-8"
+            priority={currentIndex === 0}
+            quality={currentIndex === 0 ? 85 : 75}
+          />
 
           {/* Navigation arrows - only show if more than one image */}
           {images.length > 1 && (
@@ -232,7 +99,7 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
                 size="icon"
                 onClick={prevSlide}
                 disabled={currentIndex === 0 || isTransitioning}
-                className={`absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md z-10 rounded-full w-8 h-8 sm:w-10 sm:h-10 transition-opacity duration-300 ${
+                className={`absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md z-30 rounded-full w-8 h-8 sm:w-10 sm:h-10 transition-opacity duration-300 ${
                   currentIndex === 0 ? "opacity-50 cursor-not-allowed" : "opacity-90"
                 }`}
               >
@@ -245,7 +112,7 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
                 size="icon"
                 onClick={nextSlide}
                 disabled={currentIndex === images.length - 1 || isTransitioning}
-                className={`absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md z-10 rounded-full w-8 h-8 sm:w-10 sm:h-10 transition-opacity duration-300 ${
+                className={`absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md z-30 rounded-full w-8 h-8 sm:w-10 sm:h-10 transition-opacity duration-300 ${
                   currentIndex === images.length - 1 ? "opacity-50 cursor-not-allowed" : "opacity-90"
                 }`}
               >
@@ -288,12 +155,11 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
           {/* Thumbnails container with improved scrolling */}
           <div
             ref={thumbnailsContainerRef}
-            className={`flex gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide mx-auto ${
+            className={`flex gap-2 sm:gap-3 overflow-x-auto pb-2 no-scrollbar mx-auto ${
               needsThumbnailNav ? "px-8 sm:px-10" : "justify-center"
             }`}
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {images.map((image, index) => (
+            {images.map((_, index) => (
               <button
                 key={index}
                 ref={(el) => (thumbnailRefs.current[index] = el)}
@@ -307,12 +173,13 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
               >
                 <div className="relative w-full h-full">
                   <Image
-                    src={image || "/placeholder.svg"}
+                    src={images[index] || "/placeholder.svg"}
                     alt={`Мініатюра ${index + 1}`}
                     fill
-                    sizes="(max-width: 640px) 48px, 64px"
+                    sizes="64px"
                     className="object-cover"
                     loading="lazy"
+                    quality={60}
                   />
                 </div>
               </button>
