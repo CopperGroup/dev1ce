@@ -2,14 +2,13 @@
 
 import type React from "react"
 import { useState } from "react"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Store } from "@/constants/store"
 import { ArrowLeft, Eye, EyeOff, CheckCircle, AlertTriangle, Loader2 } from "lucide-react"
 import { resetPassword } from "@/lib/actions/user.actions"
 
-export default function NewPasswordPage() {
-  const searchParams = useSearchParams()
+export default function NewPasswordPage({ searchParams }: { searchParams: any}) {
   const router = useRouter()
   const token = searchParams.get("token")
 

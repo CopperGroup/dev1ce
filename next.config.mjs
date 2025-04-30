@@ -21,6 +21,7 @@ const nextConfig = {
       bodySizeLimit: '10mb'
     },
     optimizeCss: true,
+    optimizeServerReact: true,
   }
 };
 
