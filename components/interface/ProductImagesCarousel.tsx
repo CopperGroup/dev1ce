@@ -134,7 +134,7 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
                 variant="secondary"
                 size="icon"
                 onClick={scrollThumbnailsLeft}
-                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md z-10 rounded-full w-6 h-6 sm:w-8 sm:h-8"
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md z-10 rounded-full w-6 h-6 sm:w-8 sm:h-8 max-sm:hidden"
               >
                 <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="sr-only">Попередні мініатюри</span>
@@ -144,7 +144,7 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
                 variant="secondary"
                 size="icon"
                 onClick={scrollThumbnailsRight}
-                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md z-10 rounded-full w-6 h-6 sm:w-8 sm:h-8"
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-md z-10 rounded-full w-6 h-6 sm:w-8 sm:h-8 max-sm:hidden"
               >
                 <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="sr-only">Наступні мініатюри</span>
@@ -155,7 +155,7 @@ export default function ProductImagesCarousel({ images }: ProductCarouselProps) 
           {/* Thumbnails container with improved scrolling */}
           <div
             ref={thumbnailsContainerRef}
-            className={`flex gap-2 sm:gap-3 overflow-x-auto pb-2 no-scrollbar mx-auto ${
+            className={`flex gap-2 sm:gap-3 overflow-x-auto pb-2 no-scrollbar mx-auto pt-3  ${
               needsThumbnailNav ? "px-8 sm:px-10" : "justify-center"
             }`}
           >

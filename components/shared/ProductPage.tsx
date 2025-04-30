@@ -16,18 +16,9 @@ import BuyNow from "./BuyNow"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { CategoryType } from "@/lib/types/types"
 import Link from "next/link"
+import ProductImagesCarousel from "../interface/ProductImagesCarousel"
 
-// Dynamically import components that aren't needed immediately
-// Remove this:
-// const ProductImagesCarousel = dynamic(() => import("../interface/ProductImagesCarousel"), {
-//  ssr: true,
-//  loading: () => (
-//    <div className="aspect-square bg-gray-100 rounded-2xl flex items-center justify-center w-full">
-//      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 border-gray-300 border-t-gray-800 animate-spin"></div>
-//    </div>
-//  ),
-// })
-
+// Only dynamically import the variant selector which is less critical for initial view
 const ProductVariantSelector = dynamic(() => import("../interface/ProductVariantSelector"), {
   ssr: false,
   loading: () => <div className="h-20 bg-gray-100 rounded-lg animate-pulse"></div>,
@@ -269,7 +260,7 @@ const ProductFAQ = ({ product, pretifiedName }: { product: Product; pretifiedNam
     },
     {
       question: `Чи доступна безкоштовна доставка для ${pretifiedName}?`,
-      answer: `Так, безкоштовна доставка доступна при замовленні від ${Store.currency_sign}1000.`,
+      answer: `Так, безкоштовна доставка доступна при замовленні від ${Store.currency_sign}{Store.freeDelivery}.`,
     },
   ]
 
@@ -352,7 +343,7 @@ export default function ProductPage({
   const [activeTab, setActiveTab] = useState("description")
 
   // Generate canonical URL
-  const canonicalUrl = `${Store.website}/catalog/${product._id}`
+  const canonicalUrl = `${Store.domain}/catalog/${product._id}`
 
   // Extract main category and subcategory for breadcrumbs
   const mainCategory = product.category[0]
@@ -480,13 +471,13 @@ export default function ProductPage({
               "@type": "ListItem",
               position: 1,
               name: "Головна",
-              item: Store.website,
+              item: Store.domain,
             },
             {
               "@type": "ListItem",
               position: 2,
               name: mainCategory.name,
-              item: `${Store.website}/catalog?categories=${mainCategory._id}`,
+              item: `${Store.domain}/catalog?categories=${mainCategory._id}`,
             },
             {
               "@type": "ListItem",
@@ -504,11 +495,11 @@ export default function ProductPage({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: Store.name,
-          url: Store.website,
-          logo: `${Store.website}/logo.png`,
+          url: Store.domain,
+          logo: `${Store.domain}/logo.png`,
           contactPoint: {
             "@type": "ContactPoint",
-            telephone: Store.phone,
+            telephone: Store.phoneNumber,
             contactType: "customer service",
             availableLanguage: ["Ukrainian", "English"],
           },
@@ -521,7 +512,6 @@ export default function ProductPage({
       />
 
       {/* Add a CSS class to ensure the entire page doesn't overflow horizontally */}
-      {/* Update the section element at the beginning of the component */}
       <section className="bg-white w-full overflow-x-hidden" lang="uk">
         <ContentView
           productName={pretifiedName}
@@ -535,8 +525,8 @@ export default function ProductPage({
         {/* Breadcrumb navigation - Enhanced for SEO */}
         <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-2 sm:py-4 overflow-x-auto no-scrollbar">
           <nav aria-label="Breadcrumb" className="flex items-center text-xs sm:text-sm text-gray-500 min-w-[320px]">
-            <Link href="/" className="hover:text-gray-900 transition-colors flex-shrink-0">
-              Головна
+            <Link href={Store.catalog_link} className="hover:text-gray-900 transition-colors flex-shrink-0">
+              Каталог
             </Link>
             <ChevronRight className="h-3 w-3 mx-1 sm:mx-2 flex-shrink-0" aria-hidden="true" />
             <Link
@@ -549,7 +539,6 @@ export default function ProductPage({
             <span
               className="text-gray-900 font-medium truncate max-w-[120px] sm:max-w-[200px] block"
               aria-current="page"
-              style={{ minHeight: "1.5rem" }}
             >
               {pretifiedName}
             </span>
@@ -562,84 +551,21 @@ export default function ProductPage({
           className="max-w-[1200px] mx-auto px-3 sm:px-6 pb-12 sm:pb-24 pt-3 sm:pt-6 overflow-hidden"
         >
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16">
-            {/* Product Images Section - Direct image rendering for LCP optimization */}
+            {/* Product Images Section - Improved container for mobile */}
             <div className="w-full max-w-full overflow-hidden">
-              <div className="relative aspect-square rounded-xl sm:rounded-2xl bg-[#fafafa] w-full">
-                {/* Main Product Image - Directly rendered for fastest LCP */}
-                <Image
-                  src={product.images[0] || "/placeholder.svg"}
-                  alt={`${pretifiedName} - головне зображення`}
-                  fill
-                  priority={true}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-contain p-4 sm:p-8"
-                  quality={85}
-                />
-
-                {/* Show image navigation only if there are multiple images */}
-                {product.images.length > 1 && hasMounted && (
-                  <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                    {product.images.slice(0, 5).map((_, index) => (
-                      <button
-                        key={index}
-                        className={`w-2 h-2 rounded-full ${index === 0 ? "bg-gray-800" : "bg-gray-300"}`}
-                        aria-label={`Go to image ${index + 1}`}
-                        onClick={() => {
-                          // We'll implement the full carousel functionality later
-                          // This is just for visual indication now
-                        }}
-                      />
-                    ))}
-                    {product.images.length > 5 && (
-                      <span className="text-xs text-gray-500">+{product.images.length - 5}</span>
-                    )}
-                  </div>
-                )}
+              {/* Remove fixed height container that was causing issues */}
+              <div className="w-full max-w-full">
+                {/* Directly render the carousel without conditional rendering */}
+                <ProductImagesCarousel images={product.images} />
+                <meta itemProp="image" content={product.images[0]} />
               </div>
-
-              {/* Thumbnails - only show if more than one image and after mounting */}
-              {product.images.length > 1 && hasMounted && (
-                <div className="mt-3 sm:mt-6">
-                  <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 no-scrollbar justify-center">
-                    {product.images.slice(0, 5).map((img, index) => (
-                      <button
-                        key={index}
-                        className={`flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden transition-all duration-300 ${
-                          index === 0
-                            ? "ring-2 ring-gray-900 ring-offset-2"
-                            : "ring-1 ring-gray-200 hover:ring-gray-300"
-                        }`}
-                        aria-label={`Переглянути зображення ${index + 1}`}
-                        onClick={() => {
-                          // We'll implement the full carousel functionality later
-                          // For now, just show the first image for fastest LCP
-                        }}
-                      >
-                        <div className="relative w-full h-full">
-                          <Image
-                            src={img || "/placeholder.svg"}
-                            alt={`Мініатюра ${index + 1}`}
-                            fill
-                            sizes="64px"
-                            className="object-cover"
-                            loading="lazy"
-                            quality={60}
-                          />
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <meta itemProp="image" content={product.images[0]} />
             </div>
 
             {/* Product Info Section - Fixed height elements to prevent layout shifts */}
-            <div className="space-y-4 sm:space-y-8 max-w-xl min-h-[600px]">
+            <div className="space-y-4 sm:space-y-8 max-w-xl">
               {/* Product Title and Status - Fixed heights */}
-              <div className="space-y-2 sm:space-y-4 min-h-[200px]">
-                <div className="flex flex-wrap gap-1 sm:gap-2 min-h-[28px]">
+              <div className="space-y-2 sm:space-y-4">
+                <div className="flex flex-wrap gap-1 sm:gap-2">
                   {inStock ? (
                     <Badge
                       variant="outline"
@@ -673,37 +599,35 @@ export default function ProductPage({
                   </h1>
                 </div>
 
-                {/* Display rating if reviews exist - Fixed height */}
-                <div className="min-h-[24px]">
-                  {hasReviews && (
-                    <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
-                      <div className="flex items-center">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            size={14}
-                            className={`${
-                              star <= Math.round(averageRating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-xs sm:text-sm text-gray-500">
-                        {averageRating.toFixed(1)} ({filteredReviews.length} відгуків)
-                      </span>
+                {/* Display rating if reviews exist */}
+                {hasReviews && (
+                  <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                    <div className="flex items-center">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          size={14}
+                          className={`${
+                            star <= Math.round(averageRating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                          }`}
+                        />
+                      ))}
                     </div>
-                  )}
-                </div>
+                    <span className="text-xs sm:text-sm text-gray-500">
+                      {averageRating.toFixed(1)} ({filteredReviews.length} відгуків)
+                    </span>
+                  </div>
+                )}
 
-                <div className={`${descriptionPreviewHeight} overflow-hidden`}>
+                <div className="overflow-hidden">
                   <p className="text-base sm:text-lg md:text-xl text-gray-500 leading-relaxed break-words">
                     {product.description.slice(0, 100).replace(/<\/?[^>]+(>|$)/g, "")}...
                   </p>
                 </div>
               </div>
 
-              {/* Price Section - Fixed height */}
-              <div className="pt-2 sm:pt-4 min-h-[80px]">
+              {/* Price Section */}
+              <div className="pt-2 sm:pt-4">
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                   <span itemProp="offers" itemScope itemType="https://schema.org/Offer">
                     <span className="text-2xl sm:text-3xl font-medium text-gray-900" itemProp="price">
@@ -737,19 +661,19 @@ export default function ProductPage({
                   )}
                 </div>
                 <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">
-                  Включно з ПДВ. Безкоштовна доставка при замовленні від {Store.currency_sign}1000
+                  Включно з ПДВ. Безкоштовна доставка при замовленні від {Store.currency_sign}{Store.freeDelivery}
                 </p>
               </div>
 
-              {/* Variant Selector - Fixed height */}
-              <div className="pt-2 sm:pt-4 min-h-[100px]">
+              {/* Variant Selector */}
+              <div className="pt-2 sm:pt-4">
                 <Suspense fallback={<div className="h-16 sm:h-20 bg-gray-100 rounded-lg animate-pulse"></div>}>
                   {hasMounted && <ProductVariantSelector selectParams={selectParams} productId={product._id} />}
                 </Suspense>
               </div>
 
-              {/* Call to Action Buttons - Fixed height */}
-              <div className="flex flex-col gap-2 sm:gap-3 pt-4 sm:pt-6 min-h-[120px]">
+              {/* Call to Action Buttons */}
+              <div className="flex flex-col gap-2 sm:gap-3 pt-4 sm:pt-6">
                 <BuyNow
                   id={product._id}
                   name={product.name}
@@ -769,8 +693,8 @@ export default function ProductPage({
                 />
               </div>
 
-              {/* Shipping & Payment Info - Fixed height */}
-              <div className="grid grid-cols-1 gap-3 sm:gap-4 pt-4 sm:pt-8 border-t border-gray-200 min-h-[200px]">
+              {/* Shipping & Payment Info */}
+              <div className="grid grid-cols-1 gap-3 sm:gap-4 pt-4 sm:pt-8 border-t border-gray-200">
                 <div className="flex items-start py-2 sm:py-3">
                   <Truck
                     className="flex-shrink-0 text-gray-400 mr-3 sm:mr-4 mt-0.5 sm:mt-1"
@@ -780,7 +704,7 @@ export default function ProductPage({
                   <div>
                     <p className="font-medium text-sm sm:text-base text-gray-900">Безкоштовна доставка</p>
                     <p className="text-xs sm:text-sm text-gray-500">
-                      Безкоштовна стандартна доставка при замовленні від {Store.currency_sign}1000
+                      Безкоштовна стандартна доставка при замовленні від {Store.currency_sign}{Store.freeDelivery}
                     </p>
                   </div>
                 </div>

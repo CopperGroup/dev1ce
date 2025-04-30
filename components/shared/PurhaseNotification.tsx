@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef, type TouchEvent } from "react"
 import NextImage from "next/image"
 import { X } from "lucide-react"
 
@@ -16,6 +16,17 @@ interface PurchaseNotificationProps {
   maxInterval?: number
   maxNotifications?: number
   maxProductNameLength?: number
+}
+
+interface NotificationType {
+  id: string
+  name: string
+  surname?: string
+  location: string
+  product: Product
+  timestamp: number
+  translateX?: number
+  isDismissing?: boolean
 }
 
 const preloadImages = (images: string[]) => {
@@ -174,6 +185,7 @@ const ukrainianLocations = [
   "Херсонська обл.",
   "Чернівецька обл.",
   "Кіровоградська обл.",
+  "Донецька обл.",
 ]
 
 const getRandomInterval = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min)
@@ -188,13 +200,13 @@ export default function PurchaseNotification({
   products,
   minInterval = 3000,
   maxInterval = 10000,
-  maxNotifications = 5,
+  maxNotifications = 3,
   maxProductNameLength = 25,
 }: PurchaseNotificationProps) {
-  const [notifications, setNotifications] = useState<
-    Array<{ id: string; name: string; surname?: string; location: string; product: Product; timestamp: number }>
-  >([])
+  const [notifications, setNotifications] = useState<NotificationType[]>([])
   const [sessionCounter, setSessionCounter] = useState<number>(0)
+  const touchStartXRef = useRef<Record<string, number>>({})
+  const swipeThreshold = 80 // Minimum distance to swipe before dismissing
 
   // Get last notification timestamp from session storage
   const getLastNotificationTime = () => {
@@ -252,6 +264,8 @@ export default function PurchaseNotification({
       location,
       product: truncatedProduct,
       timestamp: Date.now(),
+      translateX: 0,
+      isDismissing: false,
     }
   }
 
@@ -259,37 +273,97 @@ export default function PurchaseNotification({
     setNotifications((prev) => prev.filter((notification) => notification.id !== id))
   }
 
+  const dismissNotification = (id: string) => {
+    setNotifications((prev) =>
+      prev.map((notification) =>
+        notification.id === id ? { ...notification, translateX: -300, isDismissing: true } : notification,
+      ),
+    )
+
+    // Remove the notification after animation completes
+    setTimeout(() => {
+      removeNotification(id)
+    }, 300)
+  }
+
+  const handleTouchStart = (id: string, e: TouchEvent) => {
+    touchStartXRef.current[id] = e.touches[0].clientX
+  }
+
+  const handleTouchMove = (id: string, e: TouchEvent) => {
+    if (!touchStartXRef.current[id]) return
+
+    const touchX = e.touches[0].clientX
+    const diff = touchX - touchStartXRef.current[id]
+
+    // Only allow swiping left (negative diff)
+    if (diff < 0) {
+      setNotifications((prev) =>
+        prev.map((notification) => (notification.id === id ? { ...notification, translateX: diff } : notification)),
+      )
+    }
+  }
+
+  const handleTouchEnd = (id: string) => {
+    const notification = notifications.find((n) => n.id === id)
+    if (!notification) return
+
+    if (notification.translateX && notification.translateX < -swipeThreshold) {
+      // Swipe threshold met, dismiss the notification
+      dismissNotification(id)
+    } else {
+      // Reset position if not swiped far enough
+      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, translateX: 0 } : n)))
+    }
+
+    // Clear the touch start reference
+    delete touchStartXRef.current[id]
+  }
+
   const scheduleNextNotification = (delay: number) => {
     setTimeout(() => {
       const currentCounter = incrementSessionCounter()
-      const newNotifications: any[] = []
+      const newNotifications: NotificationType[] = []
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 640
 
-      // Always show two notifications on the second appearance in the session
-      if (currentCounter === 2) {
-        const firstNotification = generateNotification()
-        const secondNotification = generateNotification()
-
-        if (firstNotification) newNotifications.push(firstNotification)
-        if (secondNotification) newNotifications.push(secondNotification)
-      } else {
-        // For other times, show one notification with 30% chance for a second one
+      // Show fewer notifications on mobile
+      if (isMobile) {
+        // Only show one notification at a time on mobile
         const notification = generateNotification()
         if (notification) newNotifications.push(notification)
-
-        if (Math.random() < 0.3) {
+      } else {
+        // Desktop behavior
+        if (currentCounter === 2) {
+          const firstNotification = generateNotification()
           const secondNotification = generateNotification()
+
+          if (firstNotification) newNotifications.push(firstNotification)
           if (secondNotification) newNotifications.push(secondNotification)
+        } else {
+          const notification = generateNotification()
+          if (notification) newNotifications.push(notification)
+
+          if (Math.random() < 0.3) {
+            const secondNotification = generateNotification()
+            if (secondNotification) newNotifications.push(secondNotification)
+          }
         }
       }
 
       setNotifications((prev) => {
-        const updated = [...newNotifications, ...prev].slice(0, maxNotifications)
+        const maxToShow = typeof window !== "undefined" && window.innerWidth < 640 ? 2 : maxNotifications
+        const updated = [...newNotifications, ...prev].slice(0, maxToShow)
         return updated
       })
 
       setLastNotificationTime(Date.now())
 
-      scheduleNextNotification(getRandomInterval(minInterval, maxInterval))
+      // Longer intervals between notifications on mobile
+      const nextInterval = isMobile
+        ? getRandomInterval(minInterval * 1.5, maxInterval * 1.5)
+        : getRandomInterval(minInterval, maxInterval)
+
+      scheduleNextNotification(nextInterval)
     }, delay)
   }
 
@@ -323,8 +397,10 @@ export default function PurchaseNotification({
     const timer = scheduleNextNotification(delay)
 
     const cleanupTimer = setInterval(() => {
-      const eightSecondsAgo = Date.now() - 8000
-      setNotifications((prev) => prev.filter((notification) => notification.timestamp > eightSecondsAgo))
+      // Remove notifications after 5 seconds on mobile, 8 seconds on desktop
+      const timeAgo = typeof window !== "undefined" && window.innerWidth < 640 ? 5000 : 8000
+      const cutoffTime = Date.now() - timeAgo
+      setNotifications((prev) => prev.filter((notification) => notification.timestamp > cutoffTime))
     }, 1000)
 
     return () => {
@@ -419,34 +495,43 @@ export default function PurchaseNotification({
   if (!notifications.length) return null
 
   return (
-    <div className="fixed bottom-4 left-4 z-50 flex flex-col gap-2 max-w-[320px]">
+    <div className="fixed bottom-2 left-2 z-50 flex flex-col gap-2 max-w-[280px] sm:max-w-[320px] sm:bottom-4 sm:left-4">
       {notifications.map((notification) => (
         <div
           key={notification.id}
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 flex items-center gap-3 animate-in slide-in-from-left duration-300 border border-gray-200 dark:border-gray-700"
+          className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg p-2 sm:p-3 flex items-center gap-2 sm:gap-3 
+            border border-gray-200 dark:border-gray-700 text-xs sm:text-sm overflow-hidden
+            ${notification.isDismissing ? "transition-transform duration-300" : "transition-transform duration-150"}`}
+          style={{
+            transform: `translateX(${notification.translateX || 0}px)`,
+          }}
+          onTouchStart={(e) => handleTouchStart(notification.id, e)}
+          onTouchMove={(e) => handleTouchMove(notification.id, e)}
+          onTouchEnd={() => handleTouchEnd(notification.id)}
         >
-          <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-md">
+          <div className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 overflow-hidden rounded-md">
             <NextImage
-              src={notification.product.image || "/placeholder.svg?height=48&width=48"}
+              src={notification.product.image || "/placeholder.svg?height=40&width=40"}
               alt={notification.product.name}
-              width={48}
-              height={48}
+              width={40}
+              height={40}
               className="h-full w-full object-cover"
               priority={true}
             />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-              {notification.name} {notification.surname && notification.surname} придбав
-              {isFemaleName(notification.name) ? "ла" : ""} {notification.product.name}
+            <p className="font-medium text-gray-900 dark:text-gray-100 line-clamp-1">
+              {notification.name} {notification.surname && notification.surname.charAt(0) + "."}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{notification.location}</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+              придбав{isFemaleName(notification.name) ? "ла" : ""} {notification.product.name}
+            </p>
           </div>
           <button
-            onClick={() => removeNotification(notification.id)}
+            onClick={() => dismissNotification(notification.id)}
             className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
           >
-            <X className="h-4 w-4" />
+            <X className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="sr-only">Закрити</span>
           </button>
         </div>

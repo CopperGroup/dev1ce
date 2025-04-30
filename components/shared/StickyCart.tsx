@@ -78,14 +78,14 @@ export default function StickyCart() {
         {isOpened && (
           <>
             <motion.div
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpened(false)}
             />
             <motion.div
-              className="fixed h-full bg-white max-w-[400px] w-full z-50 top-0 right-0 shadow-xl"
+              className="fixed h-full bg-white max-w-[400px] w-full z-[110] top-0 right-0 shadow-xl"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
